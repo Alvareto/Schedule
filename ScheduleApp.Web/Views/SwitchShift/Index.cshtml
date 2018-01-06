@@ -1,0 +1,53 @@
+﻿@model IEnumerable<ScheduleApp.Web.Models.Database.SwitchShift>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.PrevUserDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NewUserDate)
+                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NewUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrevUser)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrevUserDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NewUserDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NewUser.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrevUser.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

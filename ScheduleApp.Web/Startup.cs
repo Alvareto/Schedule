@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using ScheduleApp.Web.Models;
 
 namespace ScheduleApp.Web
 {
@@ -32,6 +33,8 @@ namespace ScheduleApp.Web
             })
             .AddAzureAd(options => Configuration.Bind("AzureAd", options))
             .AddCookie();
+
+            services.AddDbContext<ScheduleContext>();
 
             services.AddMvc();
         }
