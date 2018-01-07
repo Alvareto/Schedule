@@ -48,7 +48,7 @@ namespace ScheduleApp.Web.Controllers
         // GET: Schedule/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace ScheduleApp.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", schedule.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", schedule.UserId);
             return View(schedule);
         }
 
@@ -82,7 +82,7 @@ namespace ScheduleApp.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", schedule.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", schedule.UserId);
             return View(schedule);
         }
 
@@ -118,7 +118,7 @@ namespace ScheduleApp.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", schedule.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", schedule.UserId);
             return View(schedule);
         }
 
