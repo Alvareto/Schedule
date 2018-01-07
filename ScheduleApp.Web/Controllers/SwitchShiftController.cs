@@ -49,8 +49,8 @@ namespace ScheduleApp.Web.Controllers
         // GET: SwitchShift/Create
         public IActionResult Create()
         {
-            ViewData["NewUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["PrevUserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["NewUserId"] = new SelectList(_context.Users, "Id", "Email");
+            ViewData["PrevUserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -67,8 +67,8 @@ namespace ScheduleApp.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["NewUserId"] = new SelectList(_context.Users, "Id", "Id", switchShift.NewUserId);
-            ViewData["PrevUserId"] = new SelectList(_context.Users, "Id", "Id", switchShift.PrevUserId);
+            ViewData["NewUserId"] = new SelectList(_context.Users, "Id", "Email", switchShift.NewUserId);
+            ViewData["PrevUserId"] = new SelectList(_context.Users, "Id", "Email", switchShift.PrevUserId);
             return View(switchShift);
         }
 
@@ -85,8 +85,8 @@ namespace ScheduleApp.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["NewUserId"] = new SelectList(_context.Users, "Id", "Id", switchShift.NewUserId);
-            ViewData["PrevUserId"] = new SelectList(_context.Users, "Id", "Id", switchShift.PrevUserId);
+            ViewData["NewUserId"] = new SelectList(_context.Users, "Id", "Email", switchShift.NewUserId);
+            ViewData["PrevUserId"] = new SelectList(_context.Users, "Id", "Email", switchShift.PrevUserId);
             return View(switchShift);
         }
 
@@ -122,8 +122,8 @@ namespace ScheduleApp.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["NewUserId"] = new SelectList(_context.Users, "Id", "Id", switchShift.NewUserId);
-            ViewData["PrevUserId"] = new SelectList(_context.Users, "Id", "Id", switchShift.PrevUserId);
+            ViewData["NewUserId"] = new SelectList(_context.Users, "Id", "Email", switchShift.NewUserId);
+            ViewData["PrevUserId"] = new SelectList(_context.Users, "Id", "Email", switchShift.PrevUserId);
             return View(switchShift);
         }
 
