@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Statistics";
+    //  { new KeyValuePair<string, object>("events", ViewData["events"]) }
+}
+<h2>@ViewData["Title"]</h2>
+
+@section Scripts {
+    @Html.Partial("_Calendar", null, new ViewDataDictionary(this.ViewData))
+}
+
+@section Styles {
+
+    <style>
+        body {
+            margin: 40px 10px;
+            padding: 0;
+            font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+            font-size: 14px;
+        }
+
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+    </style>
+
+}
+

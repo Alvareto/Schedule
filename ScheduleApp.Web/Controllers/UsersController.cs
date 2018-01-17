@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ScheduleApp.Web.Models;
-using ScheduleApp.Web.Models.Database;
+using ScheduleApp.Model;
 
 namespace ScheduleApp.Web.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly ScheduleContext _context;
@@ -22,7 +20,7 @@ namespace ScheduleApp.Web.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            return View(await _context.User.ToListAsync());
         }
 
         // GET: Users/Details/5
@@ -33,14 +31,14 @@ namespace ScheduleApp.Web.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Users
+            var user = await _context.User
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (users == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(users);
+            return View(user);
         }
 
         // GET: Users/Create
@@ -54,15 +52,15 @@ namespace ScheduleApp.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Username,Password,Email,Role,IsActive,Firstname,Lastname")] Users users)
+        public async Task<IActionResult> Create([Bind("Id,Username,Password,Email,Role,IsActive,FirstName,LastName")] User user)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(users);
+                _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(users);
+            return View(user);
         }
 
         // GET: Users/Edit/5
@@ -73,12 +71,12 @@ namespace ScheduleApp.Web.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
-            if (users == null)
+            var user = await _context.User.SingleOrDefaultAsync(m => m.Id == id);
+            if (user == null)
             {
                 return NotFound();
             }
-            return View(users);
+            return View(user);
         }
 
         // POST: Users/Edit/5
@@ -86,9 +84,9 @@ namespace ScheduleApp.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Password,Email,Role,IsActive,Firstname,Lastname")] Users users)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Password,Email,Role,IsActive,FirstName,LastName")] User user)
         {
-            if (id != users.Id)
+            if (id != user.Id)
             {
                 return NotFound();
             }
@@ -97,12 +95,12 @@ namespace ScheduleApp.Web.Controllers
             {
                 try
                 {
-                    _context.Update(users);
+                    _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsersExists(users.Id))
+                    if (!UserExists(user.Id))
                     {
                         return NotFound();
                     }
@@ -113,7 +111,7 @@ namespace ScheduleApp.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(users);
+            return View(user);
         }
 
         // GET: Users/Delete/5
@@ -124,14 +122,14 @@ namespace ScheduleApp.Web.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Users
+            var user = await _context.User
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (users == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(users);
+            return View(user);
         }
 
         // POST: Users/Delete/5
@@ -139,15 +137,15 @@ namespace ScheduleApp.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var users = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Users.Remove(users);
+            var user = await _context.User.SingleOrDefaultAsync(m => m.Id == id);
+            _context.User.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UsersExists(int id)
+        private bool UserExists(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.User.Any(e => e.Id == id);
         }
     }
 }

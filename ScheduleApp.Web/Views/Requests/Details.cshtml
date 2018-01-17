@@ -1,0 +1,48 @@
+﻿@model ScheduleApp.Model.SwitchRequest
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>SwitchRequest</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.IsBroadcast)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsBroadcast)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.HasBeenSwitched)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HasBeenSwitched)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CurrentShift)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CurrentShift.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.WishShift)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.WishShift.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

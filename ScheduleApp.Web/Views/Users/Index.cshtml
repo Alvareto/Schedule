@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ScheduleApp.Web.Models.Database.Users>
+﻿@model IEnumerable<ScheduleApp.Model.User>
 
 @{
     ViewData["Title"] = "Index";
@@ -28,10 +28,10 @@
                     @Html.DisplayNameFor(model => model.IsActive)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Firstname)
+                    @Html.DisplayNameFor(model => model.FirstName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Lastname)
+                    @Html.DisplayNameFor(model => model.LastName)
                 </th>
             <th></th>
         </tr>
@@ -55,10 +55,10 @@
                 @Html.DisplayFor(modelItem => item.IsActive)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Firstname)
+                @Html.DisplayFor(modelItem => item.FirstName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Lastname)
+                @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

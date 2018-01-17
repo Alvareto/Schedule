@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScheduleApp.Web", "ScheduleApp.Web\ScheduleApp.Web.csproj", "{86984D2E-32D9-44FA-9C7D-6B40C9F49367}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScheduleApp.Model", "ScheduleApp.Model\ScheduleApp.Model.csproj", "{603F4268-91F8-48E1-B66F-A74968E61B52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScheduleApp.Web", "ScheduleApp.Web\ScheduleApp.Web.csproj", "{FF8BF3D5-E1BE-41B1-86F8-BCB339DC2B6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{86984D2E-32D9-44FA-9C7D-6B40C9F49367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86984D2E-32D9-44FA-9C7D-6B40C9F49367}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86984D2E-32D9-44FA-9C7D-6B40C9F49367}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86984D2E-32D9-44FA-9C7D-6B40C9F49367}.Release|Any CPU.Build.0 = Release|Any CPU
+		{603F4268-91F8-48E1-B66F-A74968E61B52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{603F4268-91F8-48E1-B66F-A74968E61B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{603F4268-91F8-48E1-B66F-A74968E61B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{603F4268-91F8-48E1-B66F-A74968E61B52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF8BF3D5-E1BE-41B1-86F8-BCB339DC2B6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF8BF3D5-E1BE-41B1-86F8-BCB339DC2B6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF8BF3D5-E1BE-41B1-86F8-BCB339DC2B6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF8BF3D5-E1BE-41B1-86F8-BCB339DC2B6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

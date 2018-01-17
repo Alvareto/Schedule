@@ -1,4 +1,4 @@
-﻿@model ScheduleApp.Web.Models.Database.Users
+﻿@model ScheduleApp.Model.User
 
 @{
     ViewData["Title"] = "Details";
@@ -7,7 +7,7 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Users</h4>
+    <h4>User</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -41,16 +41,16 @@
             @Html.DisplayFor(model => model.IsActive)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Firstname)
+            @Html.DisplayNameFor(model => model.FirstName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Firstname)
+            @Html.DisplayFor(model => model.FirstName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Lastname)
+            @Html.DisplayNameFor(model => model.LastName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Lastname)
+            @Html.DisplayFor(model => model.LastName)
         </dd>
     </dl>
 </div>

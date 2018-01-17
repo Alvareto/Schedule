@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - ScheduleApp.Web</title>
 
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-cerulean.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
@@ -15,6 +15,11 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+
+    <link href="~/lib/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet" />
+    <link href="~/lib/fullcalendar/dist/fullcalendar.print.min.css" rel="stylesheet" media="print" />
+
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -26,13 +31,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ScheduleApp.Web</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Scheduler</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>
-                    <li><a asp-area="" asp-controller="Schedule" asp-action="Index">Schedule</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Calendar</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -42,16 +45,19 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - ScheduleApp.Web</p>
+            <p>&copy; 2018 - Ivan Grgurina</p>
         </footer>
     </div>
 
     <environment include="Development">
+        <script src="~/lib/moment/min/moment-with-locales.js"></script>
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/fullcalendar/dist/fullcalendar.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">
+        <script src="~/lib/moment/min/moment-with-locales.min.js"></script>
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery"
@@ -64,6 +70,7 @@
                 crossorigin="anonymous"
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
         </script>
+        <script src="~/lib/fullcalendar/dist/fullcalendar.min.js"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 

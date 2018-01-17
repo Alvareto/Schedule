@@ -1,0 +1,50 @@
+﻿@{
+    if (String.IsNullOrEmpty(ViewData["events"] as string))
+    {
+        ViewData["events"] = "[]"; // set json empty array if no events
+    }
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#calendar").fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'listWeek,basicWeek,month'
+            },
+            firstDay: 1, // Monday
+            weekends: false, // wheter to include weekeneds in any of the views - default true
+            defaultView: 'listWeek',
+            defaultDate: '2017-12-12',
+            navLinks: true, // can click day/week names to navigate views
+            editable: false,
+
+            @*
+            editable: true,
+            select: function(start, end) {
+                var title = prompt('Event Title: ');
+                var eventData;
+                if(title) {
+                    eventData = {
+                        title: title,
+                        start: start,
+                        end: end
+                    };
+                    $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+                }
+                $('#calendar').fullCalendar('unselect');
+            }, *@
+
+            eventLimit: true, // allow "more" link when too many events
+            events: @ViewData["events"]
+
+        });
+
+    });
+
+</script>
+
+<div id="calendar"></div>
