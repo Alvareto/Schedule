@@ -61,9 +61,18 @@ namespace ScheduleApp.Web.Controllers
         // GET: Requests/Create
         public IActionResult Create()
         {
-            ViewData["CurrentShiftId"] = new SelectList(_context.Shift, "Id", "Id");
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Id");
-            ViewData["WishShiftId"] = new SelectList(_context.Shift, "Id", "Id");
+            var user = _context.User.SingleOrDefault(s => s.Email.Equals(User.Identity.Name));
+            if (user == null)
+            {
+                ViewData["UserId"] = new SelectList(_context.User, "Id", "Email");
+            }
+            else
+            {
+                ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", user.Id);
+            }
+
+            ViewData["CurrentShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate");
+            ViewData["WishShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate");
             return View();
         }
 
@@ -80,9 +89,9 @@ namespace ScheduleApp.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CurrentShiftId"] = new SelectList(_context.Shift, "Id", "Id", switchRequest.CurrentShiftId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Id", switchRequest.UserId);
-            ViewData["WishShiftId"] = new SelectList(_context.Shift, "Id", "Id", switchRequest.WishShiftId);
+            ViewData["CurrentShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate", switchRequest.CurrentShiftId);
+            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", switchRequest.UserId);
+            ViewData["WishShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate", switchRequest.WishShiftId);
             return View(switchRequest);
         }
 
@@ -99,9 +108,9 @@ namespace ScheduleApp.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["CurrentShiftId"] = new SelectList(_context.Shift, "Id", "Id", switchRequest.CurrentShiftId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Id", switchRequest.UserId);
-            ViewData["WishShiftId"] = new SelectList(_context.Shift, "Id", "Id", switchRequest.WishShiftId);
+            ViewData["CurrentShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate", switchRequest.CurrentShiftId);
+            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", switchRequest.UserId);
+            ViewData["WishShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate", switchRequest.WishShiftId);
             return View(switchRequest);
         }
 
@@ -137,9 +146,9 @@ namespace ScheduleApp.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CurrentShiftId"] = new SelectList(_context.Shift, "Id", "Id", switchRequest.CurrentShiftId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Id", switchRequest.UserId);
-            ViewData["WishShiftId"] = new SelectList(_context.Shift, "Id", "Id", switchRequest.WishShiftId);
+            ViewData["CurrentShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate", switchRequest.CurrentShiftId);
+            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", switchRequest.UserId);
+            ViewData["WishShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate", switchRequest.WishShiftId);
             return View(switchRequest);
         }
 
