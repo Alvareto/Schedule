@@ -35,7 +35,9 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Calendar</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">myCalendar</a></li>
+                    <li><a asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a></li>
+                    <li><a asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -43,10 +45,6 @@
     </nav>
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - Ivan Grgurina</p>
-        </footer>
     </div>
 
     <environment include="Development">
@@ -75,5 +73,12 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+
+    <div class="container body-content">
+        <hr />
+        <footer>
+            <p>&copy; 2018 - Ivan Grgurina</p>
+        </footer>
+    </div>
 </body>
 </html>
