@@ -7,6 +7,7 @@ namespace ScheduleApp.Model
 {
     public partial class SwitchRequest
     {
+        [HiddenInput]
         public int Id { get; set; }
         [Display(Name = "User")]
         public int? UserId { get; set; }

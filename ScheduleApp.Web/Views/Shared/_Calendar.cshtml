@@ -8,6 +8,9 @@
 <script>
 
     $(document).ready(function () {
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+
 
         $("#calendar").fullCalendar({
             header: {
@@ -20,23 +23,36 @@
             defaultView: 'listWeek',
             defaultDate: '2017-12-12',
             navLinks: true, // can click day/week names to navigate views
-            editable: false,
 
-            @*
-            editable: true,
-            select: function(start, end) {
-                var title = prompt('Event Title: ');
-                var eventData;
-                if(title) {
-                    eventData = {
-                        title: title,
-                        start: start,
-                        end: end
-                    };
-                    $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-                }
-                $('#calendar').fullCalendar('unselect');
-            }, *@
+            //editable: true,
+            //select: function(start, end) {
+            //    var title = prompt('DatePreference: ', start);
+
+            //    var eventData = {
+            //        title: title,
+            //        start: start,
+            //        end: end
+            //    };
+            //    var ctrlData = {
+            //        Day: start,
+            //        IsPreffered: true
+            //    };
+
+            //    var dataWithAntiforgeryToken = $.extend(ctrlData, { '__RequestVerificationToken': token });
+
+
+            //    $.ajax({
+            //        url: "Users/{id}/Preferences/Date",
+            //        type: "POST",
+            //        data: dataWithAntiforgeryToken,
+            //        success: function(data) {
+            //            $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+            //        },
+            //        error: function() {
+            //            $('#calendar').fullCalendar('unselect');
+            //        }
+            //    });
+            //},
 
             eventLimit: true, // allow "more" link when too many events
             events: @ViewData["events"]
@@ -48,3 +64,5 @@
 </script>
 
 <div id="calendar"></div>
+
+@Html.AntiForgeryToken()

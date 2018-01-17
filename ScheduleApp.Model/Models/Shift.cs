@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ScheduleApp.Model
 {
@@ -12,9 +13,10 @@ namespace ScheduleApp.Model
             Templates = new HashSet<Schedule>();
         }
 
+        [HiddenInput]
         public int Id { get; set; }
         public DateTime? ShiftDate { get; set; }
-        public bool? IsHoliday { get; set; }
+        public Boolean IsHoliday { get; set; }
 
         public ICollection<SwitchRequest> SwitchrequestCurrentShift { get; set; }
         public ICollection<Schedule> Templates { get; set; }

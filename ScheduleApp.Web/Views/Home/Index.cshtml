@@ -6,6 +6,12 @@
 <p>
     <a asp-controller="Requests" asp-action="Create">Switch Request</a>
 </p>
+@section Breadcrumbs
+    {
+    <ol class="breadcrumb">
+        <li class="active">myCalendar</li>
+    </ol>
+}
 @section Scripts {
     @Html.Partial("_Calendar", null, new ViewDataDictionary(this.ViewData))
 }

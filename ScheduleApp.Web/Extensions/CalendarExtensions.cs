@@ -12,7 +12,8 @@ namespace ScheduleApp.Web.Extensions
             return scheduleContext.Select(schedule => new CalendarViewModel()
             {
                 start = (schedule?.Shift?.ShiftDate).GetValueOrDefault().Date,
-                title = schedule?.User?.FirstName + ' ' + schedule?.User?.LastName
+                title = schedule?.User?.FirstName + ' ' + schedule?.User?.LastName,
+                color = "green"
             }).ToList();
         }
     }
