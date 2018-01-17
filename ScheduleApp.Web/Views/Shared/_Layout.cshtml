@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - ScheduleApp.Web</title>
 
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-flatly.css" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
@@ -22,7 +22,7 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -35,7 +35,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">myCalendar</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">My Calendar</a></li>
                     <li><a asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a></li>
                     <li><a asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>
                 </ul>

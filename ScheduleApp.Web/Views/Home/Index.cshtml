@@ -1,11 +1,14 @@
 ﻿@{
-    ViewData["Title"] = "myCalendar";
+    ViewData["Title"] = "My Calendar";
     //  { new KeyValuePair<string, object>("events", ViewData["events"]) }
 }
+<br />
 <h2>@ViewData["Title"]</h2>
+
 <p>
-    <a asp-controller="Requests" asp-action="Create">Switch Request</a>
+        <button asp-controller="Requests" asp-action="Create" class="btn btn-primary">Switch Request</button>
 </p>
+<br />
 @section Scripts {
     @Html.Partial("_Calendar", null, new ViewDataDictionary(this.ViewData))
 }
