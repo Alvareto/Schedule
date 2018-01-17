@@ -1,17 +1,23 @@
 ﻿@{
-    ViewData["Title"] = "My Calendar";
-    //  { new KeyValuePair<string, object>("events", ViewData["events"]) }
+    ViewData["Title"] = "Schedule";
+    ViewData["Subtitle"] = "myCalendar";
 }
-<br />
-<h2>@ViewData["Title"]</h2>
 
-<p>
-        <button asp-controller="Requests" asp-action="Create" class="btn btn-primary">Switch Request</button>
-</p>
+<div class="btn-toolbar " role="toolbar">
+    <div class="btn-group" role="group">
+        <a asp-controller="Preferences" asp-action="Create" class="btn btn-primary">Add Shift Preferences</a>
+        <a asp-controller="Preferences" asp-action="Index" disabled onclick="return false;" class="btn btn-default">Manage Shift Preferences <span class="label label-danger">TBD</span></a>
+    </div>
+    <div class="btn-group" role="group">
+        <a asp-controller="Requests" asp-action="Create" class="btn btn-primary">Request Shift Switch</a>
+        <a asp-controller="Requests" asp-action="Index" disabled onclick="return false;" class="btn btn-default">Approve Shift Switch Requests <span class="label label-danger">TBD</span></a>
+    </div>
+</div>
+<br />
 @section Breadcrumbs
     {
     <ol class="breadcrumb">
-        <li class="active">myCalendar</li>
+        <li class="active">Home</li>
     </ol>
 }
 @section Scripts {

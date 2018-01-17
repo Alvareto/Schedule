@@ -1,21 +1,17 @@
 ﻿@model ScheduleApp.Model.SwitchRequest
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Request";
+    ViewData["Subtitle"] = "Shift Switch";
 }
 
-@section Breadcrumbs
-    {
+@section Breadcrumbs {
     <ol class="breadcrumb">
         <li><a href="#">Requests</a></li>
         <li class="active">Create</li>
     </ol>
 }
 
-<h2>Request</h2>
-
-<h4>switch shifts</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">

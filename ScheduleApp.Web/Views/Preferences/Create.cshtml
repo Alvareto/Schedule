@@ -1,13 +1,16 @@
 ﻿@model ScheduleApp.Web.Models.DatePreferenceViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add";
+    ViewData["Subtitle"] = "Shift Preference";
+}
+@section Breadcrumbs {
+    <ol class="breadcrumb">
+        <li><a href="#">Preferences</a></li>
+        <li class="active">Create</li>
+    </ol>
 }
 
-<h2>Create</h2>
-
-<h4>DatePreference</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">

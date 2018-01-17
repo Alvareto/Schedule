@@ -2,18 +2,16 @@
 
 @{
     ViewData["Title"] = "Users";
+    ViewData["Subtitle"] = "Management";
 }
 
 @section Breadcrumbs
     {
     <ol class="breadcrumb">
-        <li><a href="#">Users</a></li>
-        <li class="active">Index</li>
+        <li><a href="#">Administration</a></li>
+        <li class="active">Users</li>
     </ol>
 }
-
-<h2>@ViewData["Title"]</h2>
-<br />
 
 <p>
     <button class="btn btn-primary" asp-action="Create">Create New</button>
