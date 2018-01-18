@@ -58,6 +58,16 @@ namespace ScheduleApp.Web.Controllers
             return View(switchRequest);
         }
 
+        public IActionResult Accept(int id)
+        {
+            return null;
+        }
+
+        public IActionResult Reject(int id)
+        {
+            return null;
+        }
+
         // GET: Requests/Create
         public IActionResult Create()
         {

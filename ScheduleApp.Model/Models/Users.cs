@@ -11,9 +11,11 @@ namespace ScheduleApp.Model
             DatePreference = new HashSet<DatePreference>();
             History = new HashSet<History>();
             Schedule = new HashSet<Schedule>();
-            Switchrequest = new HashSet<SwitchRequest>();
+            SwitchRequest = new HashSet<SwitchRequest>();
             SwitchshiftNewUser = new HashSet<SwitchShift>();
             SwitchshiftPrevUser = new HashSet<SwitchShift>();
+            PendingRequests = new HashSet<PendingSwitch>();
+            WishShiftRequests = new HashSet<SwitchRequest>();
         }
 
         public int Id { get; set; }
@@ -32,8 +34,10 @@ namespace ScheduleApp.Model
         public ICollection<DatePreference> DatePreference { get; set; }
         public ICollection<History> History { get; set; }
         public ICollection<Schedule> Schedule { get; set; }
-        public ICollection<SwitchRequest> Switchrequest { get; set; }
+        public ICollection<SwitchRequest> SwitchRequest { get; set; }
         public ICollection<SwitchShift> SwitchshiftNewUser { get; set; }
         public ICollection<SwitchShift> SwitchshiftPrevUser { get; set; }
+        public ICollection<PendingSwitch> PendingRequests { get; set; }
+        public ICollection<SwitchRequest> WishShiftRequests { get; set; }
     }
 }

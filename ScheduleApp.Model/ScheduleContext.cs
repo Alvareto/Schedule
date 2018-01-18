@@ -12,6 +12,7 @@ namespace ScheduleApp.Model
         public virtual DbSet<SwitchRequest> SwitchRequest { get; set; }
         public virtual DbSet<SwitchShift> SwitchShift { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<PendingSwitch> PendingSwitch { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -115,6 +116,32 @@ namespace ScheduleApp.Model
                 entity.Property(e => e.ShiftDate).HasColumnName("shiftdate");
             });
 
+            modelBuilder.Entity<PendingSwitch>(entity =>
+            {
+                entity.ToTable("pendingswitches");
+
+                entity.Property(o => o.Id).HasColumnName("id");
+
+                entity.Property(o => o.Status).HasColumnName("status");
+
+                entity.Property(o => o.Date).HasColumnName("pending_switch");
+                entity.Property(o => o.SwitchRequestId).HasColumnName("switch_request_id");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.PendingRequests)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("pendingswitches_user_id_fkey");
+
+                entity.HasOne(d => d.SwitchRequest)
+                    .WithMany(p => p.PendingSwitch)
+                    .HasForeignKey(d => d.SwitchRequestId)
+                    .HasConstraintName("pendingswitches_switch_request_id_fkey");
+
+            });
+
+
             modelBuilder.Entity<SwitchRequest>(entity =>
             {
                 entity.ToTable("switchrequest");
@@ -131,18 +158,25 @@ namespace ScheduleApp.Model
 
                 entity.Property(e => e.WishShiftId).HasColumnName("wish_shift_id");
 
+                entity.Property(e => e.UserWishShiftId).HasColumnName("user_wish_shift_id");
+
                 entity.HasOne(d => d.CurrentShift)
-                    .WithMany(p => p.SwitchrequestCurrentShift)
+                    .WithMany(p => p.SwitchRequestCurrentShift)
                     .HasForeignKey(d => d.CurrentShiftId)
                     .HasConstraintName("switchrequest_current_shift_id_fkey");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Switchrequest)
+                    .WithMany(p => p.SwitchRequest)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("switchrequest_user_id_fkey");
 
+                entity.HasOne(d => d.UserWishShift)
+                    .WithMany(p => p.WishShiftRequests)
+                    .HasForeignKey(d => d.UserWishShiftId)
+                    .HasConstraintName("switchrequest_user_wish_shift_id_fkey");
+
                 entity.HasOne(d => d.WishShift)
-                    .WithMany(p => p.SwitchrequestWishShift)
+                    .WithMany(p => p.SwitchRequestWishShift)
                     .HasForeignKey(d => d.WishShiftId)
                     .HasConstraintName("switchrequest_wish_shift_id_fkey");
             });

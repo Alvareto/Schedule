@@ -11,8 +11,8 @@ namespace ScheduleApp.Model
     {
         public Shift()
         {
-            SwitchrequestCurrentShift = new HashSet<SwitchRequest>();
-            SwitchrequestWishShift = new HashSet<SwitchRequest>();
+            SwitchRequestCurrentShift = new HashSet<SwitchRequest>();
+            SwitchRequestWishShift = new HashSet<SwitchRequest>();
             Templates = new HashSet<Schedule>();
             DatePreferences = new HashSet<DatePreference>();
         }
@@ -28,9 +28,9 @@ namespace ScheduleApp.Model
         [DefaultValue(false)]
         public Boolean? IsHoliday { get; set; }
 
-        public ICollection<SwitchRequest> SwitchrequestCurrentShift { get; set; }
+        public ICollection<SwitchRequest> SwitchRequestCurrentShift { get; set; }
         public ICollection<Schedule> Templates { get; set; }
-        public ICollection<SwitchRequest> SwitchrequestWishShift { get; set; }
+        public ICollection<SwitchRequest> SwitchRequestWishShift { get; set; }
         public ICollection<DatePreference> DatePreferences { get; set; }
 
     }

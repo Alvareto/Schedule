@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,11 @@ namespace ScheduleApp.Model
 {
     public partial class SwitchRequest
     {
+        public SwitchRequest()
+        {
+            PendingSwitch = new HashSet<PendingSwitch>();
+        }
+
         [HiddenInput]
         public int Id { get; set; }
         [Display(Name = "User")]
@@ -21,6 +27,11 @@ namespace ScheduleApp.Model
         [HiddenInput]
         [DefaultValue(false)]
         public bool HasBeenSwitched { get; set; }
+
+        public int? UserWishShiftId { get; set; }
+
+        public User UserWishShift { get; set; }
+        public ICollection<PendingSwitch> PendingSwitch { get; set; }
 
         [Display(Name = "Current Shift")]
         public Shift CurrentShift { get; set; }
