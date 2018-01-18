@@ -13,17 +13,24 @@
     </ol>
 }
 
-<p>
-    <button class="btn btn-primary" asp-action="Create">Create New</button>
-</p>
+<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group" role="group">
+        <button class="btn btn-success" asp-action="Create"><span class="glyphicon glyphicon-plus"></span></button>
+    </div>
+</div>
+<hr />
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Username)
+                @Html.DisplayNameFor(model => model.FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
@@ -34,12 +41,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.IsActive)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
+
             <th></th>
         </tr>
     </thead>
@@ -48,10 +50,13 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Username)
+                    @Html.DisplayFor(modelItem => item.FirstName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Password)
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Email)
@@ -60,18 +65,25 @@
                     @Html.DisplayFor(modelItem => item.Role)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsActive)
+                    <div class="btn-group" role="group">
+                        @if (item.IsActive.GetValueOrDefault())
+                        {
+                            <button asp-action="ToggleActive" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Deactivate</button>
+                        }
+                        else
+                        {
+                            <button asp-action="ToggleActive" asp-route-id="@item.Id" class="btn btn-success">Activate</button>
+                        }
+
+                    </div>
                 </td>
+
                 <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <div class="btn-group" role="group">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-edit"></span></a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-share-alt"></span></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                    </div>
                 </td>
             </tr>
         }

@@ -71,8 +71,8 @@ namespace ScheduleApp.Web.Controllers
                 ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", user.Id);
             }
 
-            ViewData["CurrentShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate");
-            ViewData["WishShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate");
+            ViewData["CurrentShiftId"] = new SelectList(_context.Schedule.Include(s => s.User).Where(s => s.User.Email == User.Identity.Name).Select(s => s.Shift).OrderBy(s => s.ShiftDate), "Id", "ShiftDate");
+            ViewData["WishShiftId"] = new SelectList(_context.Schedule.Include(s => s.User).Where(s => s.User.Email != User.Identity.Name).Select(s => s.Shift).OrderBy(s => s.ShiftDate), "Id", "ShiftDate");
             return View();
         }
 

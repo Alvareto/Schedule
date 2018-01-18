@@ -69,7 +69,21 @@ namespace ScheduleApp.Web.Controllers
             var shift = await _context.Shift.SingleOrDefaultAsync(m => m.ShiftDate == vm.Day);
             if (shift == null)
             {
-                return NotFound("Desired date preference doesn't have corresponding shift available.");
+                shift = new Shift()
+                {
+                    IsHoliday = false,
+                    ShiftDate = vm.Day
+                };
+
+                try
+                {
+                    _context.Add(shift);
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    return NotFound("Desired date preference doesn't have corresponding shift available.");
+                }
             }
 
             var datePreference = new DatePreference()

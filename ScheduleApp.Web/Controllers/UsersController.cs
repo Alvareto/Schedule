@@ -79,6 +79,45 @@ namespace ScheduleApp.Web.Controllers
             return View(user);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ToggleActive(int id)
+        {
+            var user = await _context.User.SingleOrDefaultAsync(s => s.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.IsActive.HasValue)
+            {
+                user.IsActive = user.IsActive != true;
+            }
+            else
+            {
+                user.IsActive = false;
+            }
+            if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Update(user);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!UserExists(user.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+            return RedirectToAction(nameof(Index));
+        }
+
         // POST: Users/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.

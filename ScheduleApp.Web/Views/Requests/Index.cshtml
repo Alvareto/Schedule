@@ -4,20 +4,18 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
-
 <p>
     <button class="btn btn-primary" asp-action="Create">Create New</button>
 </p>
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.IsBroadcast)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.HasBeenSwitched)
-                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsBroadcast)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HasBeenSwitched)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.CurrentShift)
             </th>
@@ -31,29 +29,33 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsBroadcast)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HasBeenSwitched)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrentShift.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WishShift.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" style="color:#2c3e50"><span class="glyphicon glyphicon-edit"></span></a>|
-                <a asp-action="Details" asp-route-id="@item.Id" style="color:#2c3e50"><span class="glyphicon glyphicon-share-alt"></span></a>|
-                <a asp-action="Delete" asp-route-id="@item.Id" style="color:#2c3e50"><span class="glyphicon glyphicon-trash"></span></a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsBroadcast)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HasBeenSwitched)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentShift.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WishShift.Id)
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a asp-action="Edit" asp-route-id="@item.Id" style="color: #2c3e50"><span class="glyphicon glyphicon-edit"></span></a>
+                        <a asp-action="Details" asp-route-id="@item.Id" style="color: #2c3e50"><span class="glyphicon glyphicon-share-alt"></span></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" style="color: #2c3e50"><span class="glyphicon glyphicon-trash"></span></a>
+                    </div>
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

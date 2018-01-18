@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ScheduleApp.Model
 {
@@ -19,8 +21,12 @@ namespace ScheduleApp.Model
         public string Password { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
+        [Display(Name = "Active?")]
+        [DefaultValue(false)]
         public bool? IsActive { get; set; }
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         public ICollection<DatePreference> DatePreference { get; set; }

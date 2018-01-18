@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ScheduleApp.Model
 {
@@ -8,6 +9,7 @@ namespace ScheduleApp.Model
         public int? UserId { get; set; }
         public int? ShiftId { get; set; }
         [Display(Name="Is preffered?")]
+        [DefaultValue(false)]
         public bool? IsPreffered { get; set; }
 
         public User User { get; set; }
