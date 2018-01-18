@@ -23,7 +23,7 @@ namespace ScheduleApp.Web.Extensions
             return context.Select(s => new CalendarViewModel()
             {
                 start = s?.Shift?.ShiftDate.GetValueOrDefault().Date,
-                title = "preference",
+                title = "myPreference",
                 color = color,
                 allDay = true
             }).ToList();

@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Runtime.Serialization
+@{
     if (String.IsNullOrEmpty(ViewData["events"] as string))
     {
         ViewData["events"] = "[]"; // set json empty array if no events
@@ -25,7 +26,7 @@
             firstDay: 1, // Monday
             weekends: false, // wheter to include weekeneds in any of the views - default true
             defaultView: 'listWeek',
-            defaultDate: '2018-1-1',
+            defaultDate: '@DateTime.Now.ToString("yyyy-MM-dd")', // 2018-1-1
             navLinks: true, // can click day/week names to navigate views
             themeSystem: 'bootstrap3',
             //editable: true,
