@@ -11,6 +11,7 @@ namespace ScheduleApp.Model
             SwitchrequestCurrentShift = new HashSet<SwitchRequest>();
             SwitchrequestWishShift = new HashSet<SwitchRequest>();
             Templates = new HashSet<Schedule>();
+            DatePreferences = new HashSet<DatePreference>();
         }
 
         [HiddenInput]
@@ -21,5 +22,7 @@ namespace ScheduleApp.Model
         public ICollection<SwitchRequest> SwitchrequestCurrentShift { get; set; }
         public ICollection<Schedule> Templates { get; set; }
         public ICollection<SwitchRequest> SwitchrequestWishShift { get; set; }
+        public ICollection<DatePreference> DatePreferences { get; set; }
+
     }
 }

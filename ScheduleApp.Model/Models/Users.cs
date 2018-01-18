@@ -6,7 +6,7 @@ namespace ScheduleApp.Model
     {
         public User()
         {
-            Datepreference = new HashSet<DatePreference>();
+            DatePreference = new HashSet<DatePreference>();
             History = new HashSet<History>();
             Schedule = new HashSet<Schedule>();
             Switchrequest = new HashSet<SwitchRequest>();
@@ -23,7 +23,7 @@ namespace ScheduleApp.Model
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public ICollection<DatePreference> Datepreference { get; set; }
+        public ICollection<DatePreference> DatePreference { get; set; }
         public ICollection<History> History { get; set; }
         public ICollection<Schedule> Schedule { get; set; }
         public ICollection<SwitchRequest> Switchrequest { get; set; }

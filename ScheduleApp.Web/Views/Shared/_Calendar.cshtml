@@ -3,6 +3,10 @@
     {
         ViewData["events"] = "[]"; // set json empty array if no events
     }
+    if (String.IsNullOrEmpty(ViewData["preferences"] as string))
+    {
+        ViewData["preferences"] = "[]"; // set json empty array if no events
+    }
 }
 
 <script>
@@ -55,7 +59,16 @@
             //},
 
             eventLimit: true, // allow "more" link when too many events
-            events: @ViewData["events"]
+            eventSources: [
+                {
+                    events: @Html.Raw(ViewData["events"])
+                    //, color: 'black'
+                    //, textColor: 'yellow'
+                },
+                {
+                    events: @Html.Raw(ViewData["preferences"])
+                }
+            ]
 
         });
 
@@ -63,6 +76,5 @@
 
 </script>
 
-<div id="calendar"></div>
 
 @Html.AntiForgeryToken()

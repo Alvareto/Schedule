@@ -22,7 +22,7 @@ namespace ScheduleApp.Web.Controllers
         // GET: Preferences
         public async Task<IActionResult> Index()
         {
-            var scheduleContext = _context.DatePreference.Include(d => d.User);
+            var scheduleContext = _context.DatePreference.Include(d => d.Shift).Include(d => d.User);
             return View(await scheduleContext.ToListAsync());
         }
 

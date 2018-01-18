@@ -34,9 +34,20 @@ namespace ScheduleApp.Web.Controllers
         {
             if (!_isAuthorized)
             {
-                return new ChallengeResult();
+                return new UnauthorizedResult();
             }
 
+            ViewData["events"] = GetUserScheduleEvents();
+            ViewData["preferences"] = GetUserPreferenceEvents();
+
+            ViewData["CountPreferences"] = _context.DatePreference.Count();
+            ViewData["CountRequests"] = _context.SwitchRequest.Count();
+
+            return View();
+        }
+
+        private string GetUserScheduleEvents()
+        {
             // User.Identity.Name: ipXXXXX@fer.hr
             List<Schedule> scheduleContext = _context.Schedule.Include(s => s.Shift).Include(s => s.User).Where(s => string.Equals(s.User.Email, User.Identity.Name)).ToList();
 
@@ -46,10 +57,22 @@ namespace ScheduleApp.Web.Controllers
             {
                 DateFormatString = "yyyy-MM-dd"
             };
+            return JsonConvert.SerializeObject(events, settings);
+        }
 
-            ViewData["events"] = JsonConvert.SerializeObject(events, settings);
+        private string GetUserPreferenceEvents()
+        {
+            // User.Identity.Name: ipXXXXX@fer.hr
+            List<DatePreference> scheduleContext = _context.DatePreference.Include(s => s.Shift).Include(s => s.User).Where(s => string.Equals(s.User.Email, User.Identity.Name)).ToList();
 
-            return View();
+            var events = scheduleContext.ToCalendarViewModelList();
+
+            var settings = new JsonSerializerSettings
+            {
+                DateFormatString = "yyyy-MM-dd"
+            };
+
+            return JsonConvert.SerializeObject(events, settings);
         }
 
         [AllowAnonymous]

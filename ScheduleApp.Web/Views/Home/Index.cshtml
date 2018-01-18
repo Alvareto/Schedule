@@ -2,28 +2,55 @@
     ViewData["Title"] = "Schedule";
     ViewData["Subtitle"] = "myCalendar";
 }
-
-<div class="btn-toolbar " role="toolbar">
-    <div class="btn-group" role="group">
-        <a asp-controller="Preferences" asp-action="Create" class="btn btn-primary">Add Shift Preferences</a>
-        <a asp-controller="Preferences" asp-action="Index" disabled onclick="return false;" class="btn btn-default">Manage Shift Preferences <span class="label label-danger">TBD</span></a>
-    </div>
-    <div class="btn-group" role="group">
-        <a asp-controller="Requests" asp-action="Create" class="btn btn-primary">Request Shift Switch</a>
-        <a asp-controller="Requests" asp-action="Index" disabled onclick="return false;" class="btn btn-default">Approve Shift Switch Requests <span class="label label-danger">TBD</span></a>
-    </div>
-</div>
-<br />
 @section Breadcrumbs
     {
     <ol class="breadcrumb">
         <li class="active">Home</li>
     </ol>
 }
-@section Scripts {
-    @Html.Partial("_Calendar", null, new ViewDataDictionary(this.ViewData))
-}
+<div class="row">
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    Personal preferences
+                </div>
+            </div>
+            <div class="list-group">
+                <a asp-controller="Preferences" asp-action="Create" class="btn list-group-item list-group-item-success">Add Shift Preferences</a>
+                <a asp-controller="Preferences" asp-action="Index" class="btn list-group-item">Manage Shift Preferences <span class="badge">@ViewData["CountPreferences"]</span> <span class="label label-danger">TBD</span></a>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    Switch requests
+                </div>
+            </div>
+            <div class="list-group">
+                <a asp-controller="Requests" asp-action="Create" class="btn list-group-item list-group-item-success">Request Shift Switch</a>
+                <a asp-controller="Requests" asp-action="Index" class="btn list-group-item">Approve Shift Switch Requests <span class="badge">@ViewData["CountRequests"]</span> <span class="label label-danger">TBD</span></a>
+            </div>
+        </div>
+        @*<div class="btn-toolbar" role="toolbar">
+                <div class="btn-group-vertical" role="group">
+                    <a asp-controller="Preferences" asp-action="Create" class="btn btn-success">Add Shift Preferences</a>
+                    <a asp-controller="Preferences" asp-action="Index" class="btn btn-primary">Manage Shift Preferences <span class="badge">@ViewData["CountPreferences"]</span> <span class="label label-danger">TBD</span></a>
+                    <hr />
+                    <a asp-controller="Requests" asp-action="Create" class="btn btn-success">Request Shift Switch</a>
+                    <a asp-controller="Requests" asp-action="Index" class="btn btn-primary">Approve Shift Switch Requests <span class="badge">@ViewData["CountRequests"]</span> <span class="label label-danger">TBD</span></a>
+                </div>
+            </div>
+            <br />*@
+    </div>
+    <div class="col-sm-8">
+        @section Scripts {
+            @Html.Partial("_Calendar", null, new ViewDataDictionary(this.ViewData))
+        }
+        <div id="calendar"></div>
 
+    </div>
+</div>
 @section Styles {
 
     <style>

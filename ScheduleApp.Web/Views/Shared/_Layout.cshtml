@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    ViewData["CountUsers"] = (new ScheduleApp.Model.ScheduleContext()).User.Count();
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -42,7 +46,7 @@
                         <ul class="dropdown-menu">
                             <li><a asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a asp-area="" asp-controller="Users" asp-action="Index">Users <span class="badge pull-right">4</span></a></li>
+                            <li><a asp-area="" asp-controller="Users" asp-action="Index">Users <span class="badge pull-right">@ViewData["CountUsers"]</span></a></li>
                             @*<li role="separator" class="divider"></li>
                                 <li><a href="#">One more separated link</a></li>*@
                         </ul>

@@ -39,9 +39,14 @@ namespace ScheduleApp.Model
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Datepreference)
+                    .WithMany(p => p.DatePreference)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("datepreference_user_id_fkey");
+
+                entity.HasOne(d => d.Shift)
+                    .WithMany(p => p.DatePreferences)
+                    .HasForeignKey(d => d.ShiftId)
+                    .HasConstraintName("datepreference_shift_id_fkey");
             });
 
             modelBuilder.Entity<History>(entity =>

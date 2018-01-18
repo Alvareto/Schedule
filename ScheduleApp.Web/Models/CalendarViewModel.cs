@@ -9,5 +9,7 @@ namespace ScheduleApp.Web.Models
         public DateTime? start { get; set; }
 
         public string color { get; set; }
+
+        public bool allDay { get; set; }
     }
 }
