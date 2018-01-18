@@ -79,10 +79,11 @@ namespace ScheduleApp.Web.Controllers
             return View(user);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ToggleActive(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ToggleActive(int id)
         {
-            var user = await _context.User.SingleOrDefaultAsync(s => s.Id == id);
+            var user = _context.User.SingleOrDefault(s => s.Id == id);
             if (user == null)
             {
                 return NotFound();
@@ -97,24 +98,24 @@ namespace ScheduleApp.Web.Controllers
                 user.IsActive = false;
             }
             if (ModelState.IsValid)
+            {
+                try
                 {
-                    try
+                    _context.Update(user);
+                    _context.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(user.Id))
                     {
-                        _context.Update(user);
-                        await _context.SaveChangesAsync();
+                        return NotFound();
                     }
-                    catch (DbUpdateConcurrencyException)
+                    else
                     {
-                        if (!UserExists(user.Id))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
+                        throw;
                     }
                 }
+            }
             return RedirectToAction(nameof(Index));
         }
 
