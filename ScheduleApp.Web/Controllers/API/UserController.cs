@@ -48,7 +48,7 @@ namespace ScheduleApp.Web.Controllers.API
             userEntry.DepartmentPhone = user.DepartmentPhoneString;
             userEntry.Username = user.Username;
             userEntry.Email = user.Email;
-            userEntry.Role = user.Role;
+            userEntry.Role = user.Role.ToString();
             userEntry.NextShiftDate = null;
 
             return Json(userEntry);

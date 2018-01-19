@@ -35,7 +35,6 @@ namespace ScheduleApp.Model
         public string Password { get; set; }
         //[DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-        [EnumDataType(typeof(UserRole))]
         public UserRole Role { get; set; }
         [Display(Name = "Active?"), DefaultValue(true)]
         public bool IsActive { get; set; }
