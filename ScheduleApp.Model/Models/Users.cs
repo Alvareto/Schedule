@@ -8,9 +8,9 @@ namespace ScheduleApp.Model
 {
     public enum UserRole
     {
-        Assistant,
-        Administrator,
-        Student
+        Administrator = 0,
+        Assistant = 1,
+        Student = 2
     }
     public partial class User
     {
@@ -33,10 +33,10 @@ namespace ScheduleApp.Model
         public string Username { get; set; }
         [DataType(DataType.Password)]
         public string Password { get; set; }
-        [DataType(DataType.EmailAddress)]
+        //[DataType(DataType.EmailAddress)]
         public string Email { get; set; }
         [EnumDataType(typeof(UserRole))]
-        public string Role { get; set; }
+        public UserRole Role { get; set; }
         [Display(Name = "Active?"), DefaultValue(true)]
         public bool IsActive { get; set; }
         [Display(Name = "First Name")]

@@ -26,7 +26,7 @@ namespace ScheduleApp.Model
 
         [Display(Name = "Holiday?")]
         [DefaultValue(false)]
-        public Boolean? IsShorterDay { get; set; }
+        public Boolean IsShorterDay { get; set; }
 
         public ICollection<SwitchRequest> SwitchRequestCurrentShift { get; set; }
         public ICollection<Schedule> Templates { get; set; }

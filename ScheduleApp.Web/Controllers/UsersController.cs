@@ -52,8 +52,14 @@ namespace ScheduleApp.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Username,Password,Email,Role,IsActive,FirstName,LastName,MobilePhoneString,DepartmentPhoneString")] User user)
+        public async Task<IActionResult> Create([Bind("Password,Email,Role,IsActive,FirstName,LastName,MobilePhoneString,DepartmentPhoneString")] User user)
         {
+            user.Username = user.Email;
+            if (!user.Email.Contains("@"))
+            {
+                user.Email += "@fer.hr";
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(user);
@@ -91,7 +97,7 @@ namespace ScheduleApp.Web.Controllers
 
             //if (user.IsActive.HasValue)
             user.IsActive = user.IsActive != true;
-            
+
             if (ModelState.IsValid)
             {
                 try

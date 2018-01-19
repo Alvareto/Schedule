@@ -10,7 +10,7 @@ namespace ScheduleApp.Model
         public int? ShiftId { get; set; }
         [Display(Name="Is preffered?")]
         [DefaultValue(false)]
-        public bool? IsPreffered { get; set; }
+        public bool IsPreffered { get; set; }
 
         public User User { get; set; }
         public Shift Shift { get; set; }
