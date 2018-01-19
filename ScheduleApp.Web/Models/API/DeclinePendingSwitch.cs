@@ -1,12 +1,12 @@
 ﻿namespace ScheduleApp.Web.Models.API
 {
     /// <summary>
-    /// otkaži zamjenu termina (akciju može izvesti samo korisnik koji je stvorio request ili admin)
+    /// negativan odgovor na primljeni switch request (direct ili broadcast)
     /// </summary>
     public class DeclinePendingSwitch
     {
-        public int PendingSwitchId { get; set; }
-        public int RequesterId { get; set; }
+        public int SwitchRequestId { get; set; }
+        public int AcceptorId { get; set; }
     }
 
 }
