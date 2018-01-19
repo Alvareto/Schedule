@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ScheduleApp.Model;
+using ScheduleApp.Web.Models.API;
 
 namespace ScheduleApp.Web.Controllers.API
 {
@@ -27,7 +28,7 @@ namespace ScheduleApp.Web.Controllers.API
         /// </summary>
         // GET: api/User/email
         [HttpGet("{email}")]
-        public async Task<IActionResult> GetUser([FromRoute] string email)
+        public async Task<IActionResult> GetUserByEmail([FromRoute] string email)
         {
             if (!ModelState.IsValid)
             {
@@ -41,7 +42,16 @@ namespace ScheduleApp.Web.Controllers.API
                 return NotFound();
             }
 
-            return Ok(user);
+            UserEntry userEntry = new UserEntry();
+            userEntry.Id = user.Id;
+            userEntry.MobilePhone = user.MobilePhoneString;
+            userEntry.DepartmentPhone = user.DepartmentPhoneString;
+            userEntry.Username = user.Username;
+            userEntry.Email = user.Email;
+            userEntry.Role = user.Role;
+            userEntry.NextShiftDate = null;
+
+            return Json(userEntry);
         }
 
         /// <summary>
@@ -49,37 +59,32 @@ namespace ScheduleApp.Web.Controllers.API
         /// </summary>
         // PUT: api/User/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] User user)
+        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] UserEntry userEntry)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != user.Id)
+            if (id != userEntry.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
+            if (!UserExists(id))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
-            return NoContent();
+            var user = _context.User.Find(userEntry.Id);
+            user.FirstName = userEntry.FirstName;
+            user.LastName = userEntry.LastName;
+            user.Username = userEntry.Username;
+            user.MobilePhoneString = userEntry.MobilePhone;
+            user.DepartmentPhoneString = userEntry.DepartmentPhone;
+
+            await _context.SaveChangesAsync();
+            return Ok(true);
         }
 
         private bool UserExists(int id)
