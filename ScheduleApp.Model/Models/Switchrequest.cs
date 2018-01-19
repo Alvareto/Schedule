@@ -38,5 +38,6 @@ namespace ScheduleApp.Model
         public User User { get; set; }
         [Display(Name = "Desired Shift")]
         public Shift WishShift { get; set; }
+        public DateTime RequestCreatedDate { get; set; }
     }
 }

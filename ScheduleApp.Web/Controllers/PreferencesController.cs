@@ -71,7 +71,7 @@ namespace ScheduleApp.Web.Controllers
             {
                 shift = new Shift()
                 {
-                    IsHoliday = false,
+                    IsShorterDay = false,
                     ShiftDate = vm.Day
                 };
 

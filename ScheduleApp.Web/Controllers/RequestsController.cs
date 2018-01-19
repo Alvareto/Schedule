@@ -91,7 +91,7 @@ namespace ScheduleApp.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,CurrentShiftId,WishShiftId,IsBroadcast,HasBeenSwitched")] SwitchRequest switchRequest)
+        public async Task<IActionResult> Create([Bind("Id,UserId,CurrentShiftId,WishShiftId")] SwitchRequest switchRequest)
         {
             if (ModelState.IsValid)
             {
@@ -99,9 +99,9 @@ namespace ScheduleApp.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CurrentShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate", switchRequest.CurrentShiftId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", switchRequest.UserId);
-            ViewData["WishShiftId"] = new SelectList(_context.Shift, "Id", "ShiftDate", switchRequest.WishShiftId);
+            ViewData["CurrentShiftId"] = new SelectList(_context.Schedule.Include(s => s.User).Where(s => s.User.Email == User.Identity.Name).Select(s => s.Shift).OrderBy(s => s.ShiftDate), "Id", "ShiftDate");
+            ViewData["WishShiftId"] = new SelectList(_context.Schedule.Include(s => s.User).Where(s => s.User.Email != User.Identity.Name).Select(s => s.Shift).OrderBy(s => s.ShiftDate), "Id", "ShiftDate");
+            ViewData["UserId"] = new SelectList(_context.User.Where(s => s.Email.Equals(User.Identity.Name)), "Id", "Email", switchRequest.UserId);
             return View(switchRequest);
         }
 

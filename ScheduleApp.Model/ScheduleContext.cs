@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace ScheduleApp.Model
 {
@@ -33,7 +34,7 @@ namespace ScheduleApp.Model
                     .HasColumnName("id")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.IsPreffered).HasColumnName("is_preffered");
+                entity.Property(e => e.IsPreffered).HasColumnName("is_preffered").HasDefaultValue(false);
 
                 entity.Property(e => e.ShiftId).HasColumnName("shift_id");
 
@@ -111,7 +112,7 @@ namespace ScheduleApp.Model
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.IsHoliday).HasColumnName("is_holiday");
+                entity.Property(e => e.IsShorterDay).HasColumnName("is_shorter_day").HasDefaultValue(false);
 
                 entity.Property(e => e.ShiftDate).HasColumnName("shiftdate");
             });
@@ -155,6 +156,8 @@ namespace ScheduleApp.Model
                 entity.Property(e => e.IsBroadcast).HasColumnName("is_broadcast");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.Property(e => e.RequestCreatedDate).HasColumnName("request_created_time");
 
                 entity.Property(e => e.WishShiftId).HasColumnName("wish_shift_id");
 
