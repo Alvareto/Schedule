@@ -1,9 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ScheduleApp.Model
 {
+    public enum UserRole
+    {
+        Assistant,
+        Administrator,
+        Student
+    }
     public partial class User
     {
         public User()
@@ -18,18 +26,29 @@ namespace ScheduleApp.Model
             WishShiftRequests = new HashSet<SwitchRequest>();
         }
 
+
+
+        [HiddenInput]
         public int Id { get; set; }
         public string Username { get; set; }
+        [DataType(DataType.Password)]
         public string Password { get; set; }
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+        [EnumDataType(typeof(UserRole))]
         public string Role { get; set; }
-        [Display(Name = "Active?")]
-        [DefaultValue(false)]
+        [Display(Name = "Active?"), DefaultValue(true)]
         public bool? IsActive { get; set; }
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        [DataType(DataType.Date), Display(Name = "Last Login Date"), DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? LastLoginDate { get; set; }
+        [DataType(DataType.PhoneNumber), Display(Name = "Mobile Phone")]
+        public string MobilePhoneString { get; set; }
+        [DataType(DataType.PhoneNumber), Display(Name = "Department Phone")]
+        public string DepartmentPhoneString { get; set; }
 
         public ICollection<DatePreference> DatePreference { get; set; }
         public ICollection<History> History { get; set; }

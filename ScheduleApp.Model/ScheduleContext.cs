@@ -236,6 +236,13 @@ namespace ScheduleApp.Model
                 entity.Property(e => e.Role).HasColumnName("role");
 
                 entity.Property(e => e.Username).HasColumnName("username");
+
+                // last login, mobile phone, department phone
+                entity.Property(e => e.LastLoginDate).HasColumnName("last_login");
+
+                entity.Property(e => e.MobilePhoneString).HasColumnName("mobile_phone");
+
+                entity.Property(e => e.DepartmentPhoneString).HasColumnName("department_phone");
             });
         }
     }

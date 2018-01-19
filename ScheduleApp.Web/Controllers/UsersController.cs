@@ -44,7 +44,7 @@ namespace ScheduleApp.Web.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
-            return View();
+            return View(new User { IsActive = false });
         }
 
         // POST: Users/Create
@@ -52,7 +52,7 @@ namespace ScheduleApp.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Username,Password,Email,Role,IsActive,FirstName,LastName")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Username,Password,Email,Role,IsActive,FirstName,LastName,MobilePhoneString,DepartmentPhoneString")] User user)
         {
             if (ModelState.IsValid)
             {
