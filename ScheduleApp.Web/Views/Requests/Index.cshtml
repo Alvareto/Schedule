@@ -51,11 +51,21 @@
                     @Html.DisplayFor(modelItem => item.WishShift.Id)
                 </td>
                 <td>
-                    <<div class="btn-group" role="group">
+                    <div class="btn-group" role="group">
                         <a asp-action="Accept" asp-route-id="@item.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-ok"></span></a>
                         <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
                     </div>
 
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6">
+                    @foreach (var pending in item.PendingSwitch)
+                    {
+                        @Html.DisplayFor(modelItem => pending.Date)
+                        @Html.DisplayFor(modelItem => pending.User.Email)
+                        @Html.DisplayFor(modelItem => pending.Status)
+                    }
                 </td>
             </tr>
         }

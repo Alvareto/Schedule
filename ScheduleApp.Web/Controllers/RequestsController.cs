@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,12 @@ namespace ScheduleApp.Web.Controllers
                 return new ChallengeResult();
             }
 
-            var scheduleContext = _context.SwitchRequest.Include(s => s.CurrentShift).Include(s => s.User).Include(s => s.WishShift);
+            var scheduleContext = _context.SwitchRequest
+                .Include(s => s.CurrentShift)
+                .Include(s => s.WishShift)
+                .Include(s => s.User)
+                .Include(s => s.UserWishShift)
+                .Include(s => s.PendingSwitch);
             return View(await scheduleContext.ToListAsync());
         }
 
@@ -47,8 +53,10 @@ namespace ScheduleApp.Web.Controllers
 
             var switchRequest = await _context.SwitchRequest
                 .Include(s => s.CurrentShift)
-                .Include(s => s.User)
                 .Include(s => s.WishShift)
+                .Include(s => s.User)
+                .Include(s => s.UserWishShift)
+                .Include(s => s.PendingSwitch)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (switchRequest == null)
             {
@@ -67,6 +75,61 @@ namespace ScheduleApp.Web.Controllers
         {
             return null;
         }
+
+        // GET: Requests/Broadcast
+        public IActionResult Broadcast()
+        {
+            var user = _context.User.SingleOrDefault(s => s.Email.Equals(User.Identity.Name));
+            if (user == null)
+            {
+                ViewData["UserId"] = new SelectList(_context.User, "Id", "Email");
+            }
+            else
+            {
+                ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", user.Id);
+            }
+
+            ViewData["CurrentShiftId"] = new SelectList(_context.Schedule.Include(s => s.User).Where(s => s.User.Email == User.Identity.Name).Select(s => s.Shift).OrderBy(s => s.ShiftDate), "Id", "ShiftDate");
+            return View();
+        }
+
+        // POST: Requests/Broadcast
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Broadcast([Bind("Id,UserId,CurrentShiftId")] SwitchRequest switchRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                // Add N pending switch to notify all users about your current-shift-date switch request 
+                switchRequest.PendingSwitch = new List<PendingSwitch>();
+
+                await _context.User.Where(u => u.Id != switchRequest.UserId).ForEachAsync(
+                     u =>
+                     {
+                         switchRequest.PendingSwitch.Add(
+                             new PendingSwitch()
+                             {
+                                 UserId = u.Id,
+                                 Date = switchRequest.CurrentShift.ShiftDate,
+                                 Status = ScheduleApp.Web.Extensions.Constants.REQUEST_STATUS_NEW
+                             });
+                     });
+
+                switchRequest.IsBroadcast = true;
+
+                _context.Add(switchRequest);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["CurrentShiftId"] = new SelectList(_context.Schedule.Include(s => s.User).Where(s => s.User.Email == User.Identity.Name).Select(s => s.Shift).OrderBy(s => s.ShiftDate), "Id", "ShiftDate");
+            ViewData["UserId"] = new SelectList(_context.User.Where(s => s.Email.Equals(User.Identity.Name)), "Id", "Email", switchRequest.UserId);
+
+            return View(switchRequest);
+        }
+
 
         // GET: Requests/Create
         public IActionResult Create()
@@ -95,13 +158,29 @@ namespace ScheduleApp.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Add 1 pending switch to notify wish-user about your current-shift-date switch request 
+                switchRequest.PendingSwitch = new List<PendingSwitch>
+                {
+                    new PendingSwitch()
+                    {
+                        UserId = switchRequest.UserWishShiftId,
+                        Date = switchRequest.CurrentShift.ShiftDate,
+                        Status = ScheduleApp.Web.Extensions.Constants.REQUEST_STATUS_NEW
+                    }
+                };
+
+                //_context.User.ForEachAsync(u => new PendingSwitch {UserId = u.Id, Date = })
+
+
                 _context.Add(switchRequest);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["CurrentShiftId"] = new SelectList(_context.Schedule.Include(s => s.User).Where(s => s.User.Email == User.Identity.Name).Select(s => s.Shift).OrderBy(s => s.ShiftDate), "Id", "ShiftDate");
             ViewData["WishShiftId"] = new SelectList(_context.Schedule.Include(s => s.User).Where(s => s.User.Email != User.Identity.Name).Select(s => s.Shift).OrderBy(s => s.ShiftDate), "Id", "ShiftDate");
             ViewData["UserId"] = new SelectList(_context.User.Where(s => s.Email.Equals(User.Identity.Name)), "Id", "Email", switchRequest.UserId);
+
             return View(switchRequest);
         }
 
