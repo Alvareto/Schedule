@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ScheduleApp.Model;
+using ScheduleApp.Web.Models.API;
 
 namespace ScheduleApp.Web.Controllers.API
 {
@@ -22,15 +22,56 @@ namespace ScheduleApp.Web.Controllers.API
             _context = context;
         }
 
-        // GET: api/Shift
-        [HttpGet("All")]
-        public IEnumerable<Shift> GetShifts()
+        // GET: api/Shift/Active
+        [HttpGet("Active")]
+        public IEnumerable<DateEntry> GetShiftsOfActiveMonth()
         {
-            return _context.Shift;
+            DateTime today = DateTime.Now;
+
+            var shiftEntries = (from shifts in _context.Shift.AsQueryable()
+                                join schedules in _context.Schedule.AsQueryable()
+                                on shifts.Id equals schedules.ShiftId
+                                where shifts.ShiftDate != null && shifts.ShiftDate.Value.Month == today.Month
+                                select new DateEntry
+                                {
+                                    Date = (DateTime)shifts.ShiftDate,
+                                    DayType = "WORKDAY",
+                                    UserId = (int)schedules.UserId,
+                                    Username = schedules.User.Username,
+                                    StartHour = 8,
+                                    EndHour = 16,
+                                    ShiftId = shifts.Id
+                                }).ToList();
+
+            return shiftEntries;
+        }
+
+        // GET: api/Shift/All
+        [HttpGet("All")]
+        public IEnumerable<DateEntry> GetAllShifts()
+        {
+            DateTime today = DateTime.Now;
+
+            var shiftEntries = (from shifts in _context.Shift.AsQueryable()
+                                join schedules in _context.Schedule.AsQueryable()
+                                on shifts.Id equals schedules.ShiftId
+                                where shifts.ShiftDate != null
+                                select new DateEntry
+                                {
+                                    Date = (DateTime)shifts.ShiftDate,
+                                    DayType = "WORKDAY",
+                                    UserId = (int)schedules.UserId,
+                                    Username = schedules.User.Username,
+                                    StartHour = 8,
+                                    EndHour = 16,
+                                    ShiftId = shifts.Id
+                                }).ToList();
+
+            return shiftEntries;
         }
 
         // GET: api/Shift/Selection
-        [HttpGet]
+        [HttpGet("Selection")]
         public IEnumerable<Shift> Selection([FromRoute] DateTime intervalStartDate, [FromRoute] DateTime intervalEndDate)
         {
             return _context.Shift.Where(s => s.ShiftDate >= intervalStartDate && s.ShiftDate <= intervalEndDate);
@@ -38,21 +79,40 @@ namespace ScheduleApp.Web.Controllers.API
 
         // GET: api/Shift/User/5
         [HttpGet("User/{id}")]
-        public IEnumerable<Shift> GetUserShifts([FromRoute] int id)
+        public IEnumerable<DateEntry> GetUserShifts([FromRoute] int id)
         {
-            return _context.Schedule.Where(t => t.UserId == id).Select(s => s.Shift);
+            return _context.Schedule.Where(t => t.UserId == id).Select(s => new DateEntry
+            {
+                Date = (DateTime)s.Shift.ShiftDate,
+                DayType = "WORKDAY",
+                UserId = (int)s.UserId,
+                Username = s.User.Username,
+                StartHour = 8,
+                EndHour = 16,
+                ShiftId = (int)s.ShiftId
+            });
         }
 
-        // GET: api/Shift/Today
+        // GET: Api/Shift/Today
         [HttpGet("Today")]
-        public async Task<IActionResult> Today()
+        public IActionResult Today()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var shift = await _context.Shift.SingleOrDefaultAsync(m => m.ShiftDate == DateTime.Today);
+            var shift = _context.Schedule.Where(s => s.Shift.ShiftDate == DateTime.Today)
+                .Select(s => new DateEntry
+            {
+                Date = (DateTime)s.Shift.ShiftDate,
+                DayType = "WORKDAY",
+                UserId = (int)s.UserId,
+                Username = s.User.Username,
+                StartHour = 8,
+                EndHour = 16,
+                ShiftId = (int)s.ShiftId
+            });
 
             if (shift == null)
             {

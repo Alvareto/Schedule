@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ScheduleApp.Model;
+using ScheduleApp.Web.Models.API;
 
 namespace ScheduleApp.Web.Controllers.API
 {
@@ -27,7 +28,7 @@ namespace ScheduleApp.Web.Controllers.API
         /// </summary>
         // GET: api/User/email
         [HttpGet("{email}")]
-        public async Task<IActionResult> GetUser([FromRoute] string email)
+        public async Task<IActionResult> GetUserByEmail([FromRoute] string email)
         {
             if (!ModelState.IsValid)
             {
@@ -41,7 +42,16 @@ namespace ScheduleApp.Web.Controllers.API
                 return NotFound();
             }
 
-            return Ok(user);
+            UserEntry userEntry = new UserEntry();
+            userEntry.Id = user.Id;
+            userEntry.MobilePhone = "";
+            userEntry.DepartmentPhone = "";
+            userEntry.Username = user.Username;
+            userEntry.Email = user.Email;
+            userEntry.Role = user.Role;
+            userEntry.NextShiftDate = null;
+
+            return Json(userEntry);
         }
 
         /// <summary>
