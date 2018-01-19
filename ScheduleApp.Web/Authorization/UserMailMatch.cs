@@ -18,7 +18,7 @@ namespace ScheduleApp.Web.Authorization
             }
 
             // If we're not asking for CRUD permission, return.
-            if (resource.Any(s => String.Equals(context.User.Identity.Name, s.Email) && s.IsActive.GetValueOrDefault(false)))
+            if (resource.Any(s => String.Equals(context.User.Identity.Name, s.Email) && s.IsActive))
             {
                 context.Succeed(requirement);
             }

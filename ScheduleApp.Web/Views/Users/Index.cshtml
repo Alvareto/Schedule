@@ -79,7 +79,7 @@
                 <td>
                     <div class="btn-group" role="group">
                         <form asp-action="ToggleActive" asp-route-id="@item.Id">
-                            @if (item.IsActive.GetValueOrDefault())
+                            @if (item.IsActive)
                             {
                                 <input type="submit" value="Deactivate" class="btn btn-sm btn-danger" />
                             }

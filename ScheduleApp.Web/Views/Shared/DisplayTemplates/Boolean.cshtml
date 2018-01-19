@@ -1,0 +1,18 @@
+﻿@model bool?
+@if (ViewData.ModelMetadata.IsNullableValueType)
+{
+    @Html.DropDownListFor(r => r, new SelectListItem[]
+        {
+new SelectListItem() {Text = "", Value = ""},
+new SelectListItem() {Text = "Yes", Value = "True", Selected = (Model == true)},
+new SelectListItem() {Text = "No", Value = "False", Selected = (Model == false)},
+        })
+}
+else
+{
+    @Html.DropDownListFor(r => r, new SelectListItem[]
+        {
+new SelectListItem() { Text = "Yes", Value = "True" },
+new SelectListItem() { Text = "No", Value = "False", Selected = (Model == false) },
+        })
+}

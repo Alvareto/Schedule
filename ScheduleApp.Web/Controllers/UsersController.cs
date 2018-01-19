@@ -89,14 +89,9 @@ namespace ScheduleApp.Web.Controllers
                 return NotFound();
             }
 
-            if (user.IsActive.HasValue)
-            {
-                user.IsActive = user.IsActive != true;
-            }
-            else
-            {
-                user.IsActive = false;
-            }
+            //if (user.IsActive.HasValue)
+            user.IsActive = user.IsActive != true;
+            
             if (ModelState.IsValid)
             {
                 try

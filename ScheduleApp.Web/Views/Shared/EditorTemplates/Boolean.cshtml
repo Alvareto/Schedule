@@ -1,0 +1,9 @@
+﻿@model bool?
+@if (ViewData.ModelMetadata.IsNullableValueType)
+{
+    @Html.CheckBoxFor(r => Model.GetValueOrDefault())
+}
+else
+{
+    @Html.CheckBoxFor(r => Model.Value)
+}

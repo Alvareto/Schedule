@@ -38,7 +38,7 @@ namespace ScheduleApp.Model
         [EnumDataType(typeof(UserRole))]
         public string Role { get; set; }
         [Display(Name = "Active?"), DefaultValue(true)]
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
         [Display(Name = "Last Name")]
