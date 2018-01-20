@@ -1,16 +1,19 @@
-﻿@model ScheduleApp.Model.User
+﻿@using ScheduleApp.Model
+@model ScheduleApp.Model.User
 
 @{
     ViewData["Title"] = "Edit";
+    ViewData["Subtitle"] = "User";
+    ViewData["Personal"] = "Personal ";
+    ViewData["Contact"] = "Contact ";
+    ViewData["Admin"] = "Security ";
 }
-
-<h2>Edit</h2>
-
-<h4>User</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<form asp-action="Edit">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="page-header">
+                <h3>@ViewData["Personal"]<small>Information</small></h3>
+            </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input asp-for="Id" class="form-control" />
             <div class="form-group">
@@ -24,24 +27,19 @@
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <div class="page-header">
+                <h3>@ViewData["Contact"]<small>Information</small></h3>
             </div>
             <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
-                @Html.DropDownListFor(user => user.Role, Html.GetEnumSelectList<ScheduleApp.Model.UserRole>(), null, new { @class = "form-control" })
-                <span asp-validation-for="Role" class="text-danger"></span>
+                <label asp-for="Email" class="control-label"></label>
+                <p class="form-control-static">@Html.Raw(Model.Email)</p>
+                <input type="hidden" asp-for="Email" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="DepartmentPhoneString" class="control-label"></label>
@@ -53,16 +51,30 @@
                 <input asp-for="MobilePhoneString" class="form-control" />
                 <span asp-validation-for="MobilePhoneString" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+        <div class="col-md-4">
+            <div class="page-header">
+                <h3>@ViewData["Admin"]<small>Information</small></h3>
             </div>
-        </form>
+            <div class="form-group">
+                <label asp-for="Role" class="control-label"></label>
+                @Html.DropDownListFor(user => user.Role, Html.GetEnumSelectList<UserRole>(), null, new { @class = "form-control" })
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+        </div>
     </div>
-</div>
 
-<div>
-    <a class="btn btn-primary" asp-action="Index">Back to List</a>
-</div>
+    <hr />
+
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group" role="group">
+            <a class="btn btn-primary" asp-action="Index">Back to List</a>
+        </div>
+        <div class="btn-group pull-right" role="group">
+            <input type="submit" value="Save" class="btn btn-success" />
+        </div>
+    </div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

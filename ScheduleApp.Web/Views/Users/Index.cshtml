@@ -15,46 +15,52 @@
 
 <div class="btn-toolbar" role="toolbar">
     <div class="btn-group" role="group">
-        <button class="btn btn-success" asp-action="Create"><span class="glyphicon glyphicon-plus"></span></button>
+        <a class="btn btn-success" asp-action="Create"><span class="glyphicon glyphicon-plus"></span></a>
     </div>
 </div>
 <hr />
 
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Role)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MobilePhoneString)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DepartmentPhoneString)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </th>
+    <tr>
+        <th>
+            #
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Username)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Role)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MobilePhoneString)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DepartmentPhoneString)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </th>
 
-            <th></th>
-        </tr>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.FirstName)
                 </td>
@@ -81,11 +87,11 @@
                         <form asp-action="ToggleActive" asp-route-id="@item.Id">
                             @if (item.IsActive)
                             {
-                                <input type="submit" value="Deactivate" class="btn btn-sm btn-danger" />
+                                <input type="submit" value="Deactivate" class="btn btn-sm btn-danger"/>
                             }
                             else
                             {
-                                <input type="submit" value="Activate" class="btn btn-sm btn-success" />
+                                <input type="submit" value="Activate" class="btn btn-sm btn-success"/>
                             }
                         </form>
                     </div>

@@ -4,12 +4,16 @@
 @{
     ViewData["Title"] = "Create";
     ViewData["Subtitle"] = "User";
+    ViewData["Personal"] = "Personal ";
+    ViewData["Contact"] = "Contact ";
+    ViewData["Admin"] = "Security ";
 }
-
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<form asp-action="Create">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="page-header">
+                <h3>@ViewData["Personal"]<small>Information</small></h3>
+            </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input asp-for="Id" class="form-control" />
             <div class="form-group">
@@ -26,6 +30,11 @@
                 <label asp-for="Password" class="control-label"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="page-header">
+                <h3>@ViewData["Contact"]<small>Information</small></h3>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
@@ -45,28 +54,35 @@
                 <input asp-for="MobilePhoneString" class="form-control" />
                 <span asp-validation-for="MobilePhoneString" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-md-4">
+            <div class="page-header">
+                <h3>@ViewData["Admin"]<small>Information</small></h3>
+            </div>
             <div class="form-group">
                 <label asp-for="Role" class="control-label"></label>
                 @Html.DropDownListFor(user => user.Role, Html.GetEnumSelectList<UserRole>(), null, new { @class = "form-control" })
                 <span asp-validation-for="Role" class="text-danger"></span>
             </div>
             <div class="form-group-sm">
-                
                 <label asp-for="IsActive" class="control-label"></label>
-                @*@Html.CheckBoxFor(r => Model.IsActive)*@
-                <input asp-for="IsActive" class="form-control"/>
+                <input asp-for="IsActive" class="form-control" />
                 <span asp-validation-for="IsActive" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a class="btn btn-primary" asp-action="Index">Back to List</a>
-</div>
+    <hr />
+
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group" role="group">
+            <a class="btn btn-primary" asp-action="Index">Back to List</a>
+        </div>
+        <div class="btn-group pull-right" role="group">
+            <input type="submit" value="Create" class="btn btn-success" />
+        </div>
+    </div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
