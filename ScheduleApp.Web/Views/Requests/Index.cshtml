@@ -1,7 +1,16 @@
 ﻿@model IEnumerable<ScheduleApp.Model.SwitchRequest>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Requests";
+    ViewData["Subtitle"] = "Management";
+}
+
+@section Breadcrumbs
+    {
+    <ol class="breadcrumb">
+        <li><a href="#">Administration</a></li>
+        <li class="active">Requests</li>
+    </ol>
 }
 
 <div class="btn-toolbar" role="toolbar">
@@ -10,64 +19,85 @@
     </div>
 </div>
 <hr />
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IsBroadcast)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HasBeenSwitched)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CurrentShift)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.WishShift)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsBroadcast)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HasBeenSwitched)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CurrentShift.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.WishShift.Id)
-                </td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <a asp-action="Accept" asp-route-id="@item.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-ok"></span></a>
-                        <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
-                    </div>
 
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6">
-                    @foreach (var pending in item.PendingSwitch)
-                    {
-                        @Html.DisplayFor(modelItem => pending.Date)
-                        @Html.DisplayFor(modelItem => pending.User.Email)
-                        @Html.DisplayFor(modelItem => pending.Status)
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@foreach (var item in Model)
+{
+    <div class="panel panel-@(item.HasBeenSwitched ? "danger" : item.IsBroadcast? "primary" : "info")">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Request #@Html.DisplayFor(modelItem => item.Id)</div>
+        <div class="panel-body">
+            <div class="row">
+                <dl class="col-sm-6 dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.User)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(modelItem => item.User.Email)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.CurrentShift)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(modelItem => item.CurrentShift.ShiftDate)
+                    </dd>
+                </dl>
+                <dl class="col-sm-6 dl-horizontal pull-right">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.IsBroadcast)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(modelItem => item.IsBroadcast)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.WishShift)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(modelItem => item.WishShift.ShiftDate)
+                    </dd>
+
+                    @*<dt>
+                            @Html.DisplayNameFor(model => model.HasBeenSwitched)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(modelItem => item.HasBeenSwitched)
+                        </dd>*@
+                </dl>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pending in item.PendingSwitches)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => pending.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => pending.User.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => pending.Status)
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a asp-action="Accept" asp-route-id="@pending.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-ok"></span></a>
+                                <a asp-action="Reject" asp-route-id="@pending.Id" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+}

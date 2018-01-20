@@ -126,6 +126,7 @@ namespace ScheduleApp.Model
                 entity.Property(o => o.Status).HasColumnName("status");
 
                 entity.Property(o => o.Date).HasColumnName("pending_switch");
+
                 entity.Property(o => o.SwitchRequestId).HasColumnName("switch_request_id");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -136,7 +137,7 @@ namespace ScheduleApp.Model
                     .HasConstraintName("pendingswitches_user_id_fkey");
 
                 entity.HasOne(d => d.SwitchRequest)
-                    .WithMany(p => p.PendingSwitch)
+                    .WithMany(p => p.PendingSwitches)
                     .HasForeignKey(d => d.SwitchRequestId)
                     .HasConstraintName("pendingswitches_switch_request_id_fkey");
 

@@ -58,7 +58,7 @@ namespace ScheduleApp.Web.Controllers.API
                         RequesterUsername = request.User.Username,
                         RequestCreatedDate = null,
                         RequesterDate = (DateTime)request.CurrentShift.ShiftDate,
-                        OfferedDates = request.PendingSwitch.Select(ps => new PendingSwitchEntry
+                        OfferedDates = request.PendingSwitches.Select(ps => new PendingSwitchEntry
                         {
                             Id = ps.Id,
                             Status = ps.Status,

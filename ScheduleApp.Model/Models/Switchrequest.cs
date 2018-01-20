@@ -10,7 +10,7 @@ namespace ScheduleApp.Model
     {
         public SwitchRequest()
         {
-            PendingSwitch = new HashSet<PendingSwitch>();
+            PendingSwitches = new HashSet<PendingSwitch>();
         }
 
         [HiddenInput]
@@ -31,7 +31,6 @@ namespace ScheduleApp.Model
         public int? UserWishShiftId { get; set; }
 
         public User UserWishShift { get; set; }
-        public ICollection<PendingSwitch> PendingSwitch { get; set; }
 
         [Display(Name = "Current Shift")]
         public Shift CurrentShift { get; set; }
@@ -39,5 +38,7 @@ namespace ScheduleApp.Model
         [Display(Name = "Desired Shift")]
         public Shift WishShift { get; set; }
         public DateTime RequestCreatedDate { get; set; }
+
+        public ICollection<PendingSwitch> PendingSwitches { get; set; }
     }
 }

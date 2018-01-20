@@ -11,6 +11,6 @@ namespace ScheduleApp.Model
         public int? UserId { get; set; }
         public User User { get; set; }
         public SwitchRequest SwitchRequest { get; set; }
-        public int? SwitchRequestId { get; set; }
+        public int SwitchRequestId { get; set; }
     }
 }
