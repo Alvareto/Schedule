@@ -65,6 +65,9 @@ namespace ScheduleApp.Web.Controllers
                     //{ RequestType.broadcastToMe, await broadcastToMe.ToListAsync() }
                 };
 
+            // helper broadcast acceptor select list for Accept action
+            ViewData["BroadcastWishShiftId"] = new SelectList(_context.Schedule.Include(s => s.User).Where(s => s.User.Email == User.Identity.Name).Select(s => s.Shift).OrderBy(s => s.ShiftDate), "Id", "ShiftDate");
+
             return View(model); //await scheduleContext.ToListAsync());
         }
 
@@ -91,7 +94,7 @@ namespace ScheduleApp.Web.Controllers
             return View(switchRequest);
         }
 
-        public IActionResult Accept(int id)
+        public IActionResult Accept(int id, int broadcastWishShiftId)
         {
             var pendingSwitch = _context.PendingSwitch
                 .Include(s => s.User)
