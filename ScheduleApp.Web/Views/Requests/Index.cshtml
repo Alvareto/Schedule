@@ -81,7 +81,9 @@
         <!-- Default panel contents -->
         <div class="panel-heading" style="padding-bottom: 0px; margin-bottom: 25px;">
             <span class="panel-title">
-                <strong>myRequest #@Html.DisplayFor(modelItem => item.Id)</strong>
+                <strong>
+                    my@(item.IsBroadcast ? "Broadcast" : "")Request #@Html.DisplayFor(modelItem => item.Id)
+                </strong>
             </span>
             <div class="btn-group pull-right" role="group" style="margin-top: -10px;margin-right: -15px;">
                 @*<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-edit"></span></a>

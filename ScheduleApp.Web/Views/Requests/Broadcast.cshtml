@@ -1,14 +1,15 @@
 ﻿@model ScheduleApp.Model.SwitchRequest
 
 @{
-    ViewData["Title"] = "Request";
+    ViewData["Title"] = "Broadcast";
     ViewData["Subtitle"] = "Shift Switch";
 }
 
 @section Breadcrumbs {
     <ol class="breadcrumb">
         <li><a href="#">Requests</a></li>
-        <li class="active">Create</li>
+        <li><a href="#">Create</a></li>
+        <li class="active">Broadcast</li>
     </ol>
 }
 
@@ -16,10 +17,7 @@
     <div class="col-md-4">
         <form asp-action="Broadcast">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" disabled class="form-control" asp-items="ViewBag.UserId"></select>
-            </div>
+            <input type="hidden" asp-for="UserId" />
             <div class="form-group">
                 <label asp-for="CurrentShiftId" class="control-label"></label>
                 <select asp-for="CurrentShiftId" class="form-control" asp-items="ViewBag.CurrentShiftId"></select>

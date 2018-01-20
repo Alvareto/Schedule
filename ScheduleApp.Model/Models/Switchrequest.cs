@@ -22,7 +22,7 @@ namespace ScheduleApp.Model
         [Display(Name = "Desired Shift")]
         public int? WishShiftId { get; set; }
         [HiddenInput]
-        [DefaultValue(false)]
+        [DefaultValue(false), Display(Name = "Broadcast?")]
         public bool IsBroadcast { get; set; }
         [HiddenInput]
         [DefaultValue(false)]
