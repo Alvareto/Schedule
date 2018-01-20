@@ -249,7 +249,7 @@ namespace ScheduleApp.Web.Controllers
             // Add N pending switch to notify all users about your current-shift-date switch request 
             var pendingSwitches = await _context.PendingSwitch.Where(m => m.SwitchRequestId == vm.Id).ToListAsync();
             //if (pendingSwitches.Any())
-            var users = _context.User.Where(u => u.Email != user.Email).ToList();
+            var users = _context.User.Where(u => u.Email != user.Email && u.IsActive).ToList();
             foreach (var u in users)
             {
                 var pendingSwitch = new PendingSwitch();
