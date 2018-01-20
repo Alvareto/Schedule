@@ -112,13 +112,22 @@ namespace ScheduleApp.Web.Controllers
                 return NotFound();
             }
 
-            var datePreference = await _context.DatePreference.SingleOrDefaultAsync(m => m.Id == id);
+            var datePreference = await _context.DatePreference.Include(m => m.User).Include(m => m.Shift).SingleOrDefaultAsync(m => m.Id == id);
             if (datePreference == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Id", datePreference.UserId);
-            return View(datePreference);
+
+
+            DatePreferenceEditViewModel vm = new DatePreferenceEditViewModel()
+            {
+                Id = datePreference.Id,
+                Day = datePreference.Shift.ShiftDate.GetValueOrDefault(),
+                IsPreffered = datePreference.IsPreffered,
+                UserId = datePreference.UserId.GetValueOrDefault()
+            };
+            //ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", datePreference.UserId);
+            return View(vm);
         }
 
         // POST: Preferences/Edit/5
@@ -126,12 +135,44 @@ namespace ScheduleApp.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,ShiftId,IsPreffered")] DatePreference datePreference)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,Day,IsPreffered")] DatePreferenceEditViewModel vm)
         {
-            if (id != datePreference.Id)
+            if (id != vm.Id)
             {
                 return NotFound();
             }
+
+            var datePreference = await _context.DatePreference.Include(m => m.User).Include(m => m.Shift).SingleOrDefaultAsync(m => m.Id == id);
+            if (datePreference == null)
+            {
+                return NotFound();
+            }
+
+            datePreference.IsPreffered = vm.IsPreffered;
+
+            #region shift date existence checking, again adding if not exists - same as on create
+            var shift = await _context.Shift.SingleOrDefaultAsync(m => m.ShiftDate == vm.Day);
+            if (shift == null)
+            {
+                shift = new Shift()
+                {
+                    IsShorterDay = false,
+                    ShiftDate = vm.Day
+                };
+
+                try
+                {
+                    _context.Add(shift);
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    return NotFound("Desired date preference doesn't have corresponding shift available.");
+                }
+            }
+            #endregion
+
+            datePreference.Shift = shift;
 
             if (ModelState.IsValid)
             {
@@ -153,8 +194,8 @@ namespace ScheduleApp.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Id", datePreference.UserId);
-            return View(datePreference);
+
+            return View(vm);
         }
 
         // GET: Preferences/Delete/5

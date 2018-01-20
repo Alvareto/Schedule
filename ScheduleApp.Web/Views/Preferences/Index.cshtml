@@ -1,15 +1,24 @@
 ﻿@model IEnumerable<ScheduleApp.Model.DatePreference>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Preferences";
+    ViewData["Subtitle"] = "Management";
 }
 
-<div class="btn-toolbar" role="toolbar">
-    <div class="btn-group" role="group">
-        <button class="btn btn-success" asp-action="Create"><span class="glyphicon glyphicon-plus"></span></button>
+@section Breadcrumbs
+    {
+    <ol class="breadcrumb">
+        <li><a href="#">Administration</a></li>
+        <li class="active">Preferences</li>
+    </ol>
+}
+
+@*<div class="btn-toolbar" role="toolbar">
+        <div class="btn-group" role="group">
+            <button class="btn btn-success" asp-action="Create"><span class="glyphicon glyphicon-plus"></span></button>
+        </div>
     </div>
-</div>
-<hr />
+    <hr />*@
 <table class="table">
     <thead>
         <tr>
@@ -33,7 +42,7 @@
                     @Html.DisplayFor(modelItem => item.Shift.ShiftDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsPreffered)
+                    <span class="glyphicon glyphicon-@(item.IsPreffered ? "ok" : "remove")"></span>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.User.Email)
@@ -41,7 +50,7 @@
                 <td>
                     <div class="btn-group" role="group">
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-edit"></span></a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-share-alt"></span></a>
+                        @*<a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-share-alt"></span></a>*@
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     </div>
                 </td>
