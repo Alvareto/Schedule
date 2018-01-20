@@ -43,7 +43,7 @@ namespace ScheduleApp.Web.Controllers
                 .Include(s => s.WishShift)
                 .Include(s => s.User)
                 .Include(s => s.UserWishShift)
-                .Include(s => s.PendingSwitches)
+                .Include(s => s.PendingSwitches).ThenInclude(u => u.User) // fixx to show all user emails in broadcast list
                 .Where(s => s.User.Email.Equals(User.Identity.Name) || s.UserWishShift.Email.Equals(User.Identity.Name)) // one of the users is involved
                 ;
 
