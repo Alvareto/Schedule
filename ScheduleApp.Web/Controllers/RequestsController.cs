@@ -93,15 +93,121 @@ namespace ScheduleApp.Web.Controllers
 
         public IActionResult Accept(int id)
         {
-            var switchRequest = _context.PendingSwitch.SingleOrDefault(s => s.Id == id);
+            var pendingSwitch = _context.PendingSwitch
+                .Include(s => s.User)
+                .Include(s => s.SwitchRequest) //.ThenInclude(m => m.WishShift)
+                .SingleOrDefault(s => s.Id == id);
 
-            //switchRequest.
-            return null;
+            if (pendingSwitch == null)
+            {
+                return NotFound();
+            }
+
+            pendingSwitch.Status = Extensions.Constants.REQUEST_STATUS_ACCEPTED;
+
+            var switchRequest = _context.SwitchRequest
+                .Include(s => s.User)
+                .Include(s => s.CurrentShift)
+                .Include(s => s.WishShift)
+                .Include(s => s.UserWishShift)
+                .Include(s => s.PendingSwitches)
+                .SingleOrDefault(s => s.Id == pendingSwitch.SwitchRequestId);
+            if (switchRequest == null)
+            {
+                return NotFound();
+            }
+
+            //pendingSwitch.SwitchRequest.HasBeenSwitched = true;
+            if (switchRequest.IsBroadcast)
+            {
+                // if it's broadcast, reject all other pendingSwitches
+                foreach (var p in switchRequest.PendingSwitches)
+                {
+                    p.Status = Extensions.Constants.REQUEST_STATUS_REJECTED;
+                }
+                // and set WishShift to acceptor random(?) shift
+                // -- get acceptor
+                var acceptor = _context.User.SingleOrDefault(u => u.Email.Equals(User.Identity.Name));
+                if (acceptor == null)
+                {
+                    return NotFound();
+                }
+
+                switchRequest.UserWishShift = acceptor;
+
+                // -- get random(?) shift
+                var acceptorSchedule = _context.Schedule.Include(u => u.Shift).Include(u => u.User)
+                    .FirstOrDefault(u => u.User.Id == acceptor.Id);
+                if (acceptorSchedule == null)
+                {
+                    return NotFound();
+                }
+
+                switchRequest.WishShift = acceptorSchedule.Shift;
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(pendingSwitch);
+                    _context.Update(switchRequest);
+                    _context.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PendingSwitchExists(pendingSwitch.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+
         }
 
         public IActionResult Reject(int id)
         {
-            return null;
+            var pendingSwitch = _context.PendingSwitch
+                .Include(s => s.User)
+                .Include(s => s.SwitchRequest)
+                .SingleOrDefault(s => s.Id == id);
+
+            if (pendingSwitch == null)
+            {
+                return NotFound();
+            }
+
+
+
+            pendingSwitch.Status = Extensions.Constants.REQUEST_STATUS_REJECTED;
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(pendingSwitch);
+                    _context.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PendingSwitchExists(pendingSwitch.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Requests/Broadcast
@@ -373,6 +479,11 @@ namespace ScheduleApp.Web.Controllers
         private bool SwitchRequestExists(int id)
         {
             return _context.SwitchRequest.Any(e => e.Id == id);
+        }
+
+        private bool PendingSwitchExists(int id)
+        {
+            return _context.PendingSwitch.Any(e => e.Id == id);
         }
     }
 }

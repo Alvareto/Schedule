@@ -40,7 +40,7 @@
                 {
                     foreach (var pending in item.PendingSwitches)
                     {
-                        <tr>
+                        <tr class="@(pending.Status == Constants.REQUEST_STATUS_REJECTED ? "danger" : pending.Status == Constants.REQUEST_STATUS_ACCEPTED ? "success" : "default")">
                             <td>
                                 @Html.DisplayFor(modelItem => item.Id)
                             </td>
@@ -57,10 +57,14 @@
                                 @Html.DisplayFor(modelItem => pending.Status)
                             </td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <a asp-action="Accept" asp-route-id="@pending.Id" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-ok"></span></a>
-                                    <a asp-action="Reject" asp-route-id="@pending.Id" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
-                                </div>
+                                @if (pending.Status == Constants.REQUEST_STATUS_NEW)
+                                {
+
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Accept" asp-route-id="@pending.Id" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-ok"></span></a>
+                                        <a asp-action="Reject" asp-route-id="@pending.Id" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
+                                    </div>
+                                }
                             </td>
                         </tr>
                     }
