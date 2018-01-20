@@ -31,6 +31,7 @@
                     <th>From User</th>
                     <th>Shift Date</th>
                     <th>Broadcast / Direct?</th>
+                    <th></th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -40,36 +41,49 @@
                 {
                     foreach (var pending in item.PendingSwitches)
                     {
-                        <tr class="@(pending.Status == Constants.REQUEST_STATUS_REJECTED ? "danger" : pending.Status == Constants.REQUEST_STATUS_ACCEPTED ? "success" : "default")">
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Id)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.User.Email)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => pending.Date)
-                            </td>
-                            <td>
-                                @Html.Raw(item.IsBroadcast ? "BROADCAST" : "DIRECT")
-                                @if (item.IsBroadcast)
-                                {
-                                    @Html.DropDownListFor(modelItem => item.WishShiftId, (List<SelectListItem>)ViewData["BroadcastWishShiftId"])
-                                }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => pending.Status)
-                            </td>
-                            <td>
-                                @if (pending.Status == Constants.REQUEST_STATUS_NEW)
-                                {
-                                    <div class="btn-group" role="group">
-                                        <a asp-action="Accept" asp-route-id="@pending.Id" asp-route-broadcastWishShiftId="@item.WishShiftId" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-ok"></span></a>
-                                        <a asp-action="Reject" asp-route-id="@pending.Id" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
-                                    </div>
-                                }
-                            </td>
-                        </tr>
+                        if ((item.IsBroadcast && pending.User.Email == User.Identity.Name) || !item.IsBroadcast)
+                        {
+
+                            <tr class="@(pending.Status == Constants.REQUEST_STATUS_REJECTED ? "danger" : pending.Status == Constants.REQUEST_STATUS_ACCEPTED ? "success" : "default")">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id) - @Html.DisplayFor(modelItem => pending.Id)
+                                </td>
+                                <td>
+                                    @*@if (item.IsBroadcast)
+                                        {
+                                            @Html.DisplayFor(modelItem => pending.User.Email)
+
+                                        }
+                                        else
+                                        {*@
+                                    @Html.DisplayFor(modelItem => item.User.Email)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => pending.Date)
+                                </td>
+                                <td>
+                                    @Html.Raw(item.IsBroadcast ? "BROADCAST" : "DIRECT")
+                                </td>
+                                <td>
+                                    @if (item.IsBroadcast && pending.Status == Constants.REQUEST_STATUS_NEW)
+                                    {
+                                        @Html.DropDownListFor(modelItem => item.WishShiftId, (SelectList)ViewData["BroadcastWishShiftId"])
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => pending.Status)
+                                </td>
+                                <td>
+                                    @if (pending.Status == Constants.REQUEST_STATUS_NEW)
+                                    {
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Accept" asp-route-id="@pending.Id" asp-route-broadcastWishShiftId="@item.WishShiftId" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-ok"></span></a>
+                                            <a asp-action="Reject" asp-route-id="@pending.Id" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
                     }
                 }
             </tbody>

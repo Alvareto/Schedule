@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using ScheduleApp.Model;
 using ScheduleApp.Web.Authorization;
 using ScheduleApp.Web.Extensions;
+using Constants = ScheduleApp.Web.Extensions.Constants;
 
 namespace ScheduleApp.Web.Controllers
 {
@@ -44,12 +45,13 @@ namespace ScheduleApp.Web.Controllers
                 .Include(s => s.User)
                 .Include(s => s.UserWishShift)
                 .Include(s => s.PendingSwitches).ThenInclude(u => u.User) // fixx to show all user emails in broadcast list
-                .Where(s => s.User.Email.Equals(User.Identity.Name) || s.UserWishShift.Email.Equals(User.Identity.Name)) // one of the users is involved
-                ;
+                ; // removed double condition to fix broadcast accept requests not showing up xd
 
             var myRequests = scheduleContext.Where(s => s.User.Email.Equals(User.Identity.Name));
-            var requestsToMe = scheduleContext.Where(s => s.UserWishShift.Email.Equals(User.Identity.Name))
-                .Where(s => !s.HasBeenSwitched); // bilo direct bilo broadcast koji nije zamijenjen
+            var requestsToMe = scheduleContext.Where(s => s.UserWishShift.Email == User.Identity.Name || s.IsBroadcast)
+                .Where(s => !s.HasBeenSwitched); //. // bilo direct bilo broadcast koji nije zamijenjen
+                                                 // ili broadcast koji nema niti jedan pendingSwitch = ACCEPTED
+                                                 //Where(s => s.IsBroadcast && s.PendingSwitches.All(t => t.Status != Constants.REQUEST_STATUS_ACCEPTED));
 
             //var myDirect = myRequests.Where(s => !s.IsBroadcast);
             //var myBroadcast = myRequests.Where(s => s.IsBroadcast);
