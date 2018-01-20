@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ScheduleApp.Model.SwitchRequest>
+﻿@using ScheduleApp.Web.Extensions
+@model Dictionary<RequestType, List<ScheduleApp.Model.SwitchRequest>>
 
 @{
     ViewData["Title"] = "Requests";
@@ -13,29 +14,69 @@
     </ol>
 }
 
-<div class="btn-toolbar" role="toolbar">
-    <div class="btn-group" role="group">
-        <button class="btn btn-success" asp-action="Create"><span class="glyphicon glyphicon-plus"></span></button>
-    </div>
-</div>
-<hr />
-
-@foreach (var item in Model)
+@foreach (var item in Model[RequestType.REQUESTS_TO_ME])
 {
-    <div class="panel panel-@(item.HasBeenSwitched ? "danger" : item.IsBroadcast? "primary" : "info")">
+    <!-- Table -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Shift Date</th>
+                <th>From User</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pending in item.PendingSwitches)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => pending.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.User.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => pending.Status)
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a asp-action="Accept" asp-route-id="@pending.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-ok"></span></a>
+                            <a asp-action="Reject" asp-route-id="@pending.Id" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@foreach (var item in Model[RequestType.MY_REQUESTS])
+{
+    <div class="panel panel-@(item.HasBeenSwitched ? "danger" : item.IsBroadcast? "primary" : "default")">
         <!-- Default panel contents -->
-        <div class="panel-heading">Request #@Html.DisplayFor(modelItem => item.Id)</div>
+        <div class="panel-heading" style="padding-bottom: 25px; margin-bottom: 25px;">
+            <span class="panel-title">
+                <strong>myRequest #@Html.DisplayFor(modelItem => item.Id)</strong>
+            </span>
+            <div class="btn-group pull-right" role="group">
+                @*<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-edit"></span></a>*@
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-share-alt"></span></a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+            </div>
+        </div>
         <div class="panel-body">
             <div class="row">
                 <dl class="col-sm-6 dl-horizontal">
                     <dt>
-                        @Html.DisplayNameFor(model => model.User)
+                        @Html.DisplayNameFor(model => item.User)
                     </dt>
                     <dd>
                         @Html.DisplayFor(modelItem => item.User.Email)
                     </dd>
                     <dt>
-                        @Html.DisplayNameFor(model => model.CurrentShift)
+                        @Html.DisplayNameFor(model => item.CurrentShift)
                     </dt>
                     <dd>
                         @Html.DisplayFor(modelItem => item.CurrentShift.ShiftDate)
@@ -43,13 +84,13 @@
                 </dl>
                 <dl class="col-sm-6 dl-horizontal pull-right">
                     <dt>
-                        @Html.DisplayNameFor(model => model.IsBroadcast)
+                        @Html.DisplayNameFor(model => item.IsBroadcast)
                     </dt>
                     <dd>
                         @Html.DisplayFor(modelItem => item.IsBroadcast)
                     </dd>
                     <dt>
-                        @Html.DisplayNameFor(model => model.WishShift)
+                        @Html.DisplayNameFor(model => item.WishShift)
                     </dt>
                     <dd>
                         @Html.DisplayFor(modelItem => item.WishShift.ShiftDate)
@@ -70,9 +111,9 @@
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>User</th>
+                    <th>To User</th>
                     <th>Status</th>
-                    <th></th>
+                    @*<th></th>*@
                 </tr>
             </thead>
             <tbody>
@@ -88,12 +129,12 @@
                         <td>
                             @Html.DisplayFor(modelItem => pending.Status)
                         </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a asp-action="Accept" asp-route-id="@pending.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-ok"></span></a>
-                                <a asp-action="Reject" asp-route-id="@pending.Id" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
-                            </div>
-                        </td>
+                        @*<td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Accept" asp-route-id="@pending.Id" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-ok"></span></a>
+                                    <a asp-action="Reject" asp-route-id="@pending.Id" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></a>
+                                </div>
+                            </td>*@
                     </tr>
                 }
             </tbody>

@@ -9,9 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ScheduleApp.Model;
 using ScheduleApp.Web.Authorization;
+using ScheduleApp.Web.Extensions;
 
 namespace ScheduleApp.Web.Controllers
 {
+
+
     public class RequestsController : Controller
     {
         private readonly ScheduleContext _context;
@@ -40,9 +43,32 @@ namespace ScheduleApp.Web.Controllers
                 .Include(s => s.WishShift)
                 .Include(s => s.User)
                 .Include(s => s.UserWishShift)
-                .Include(s => s.PendingSwitches);
-            return View(await scheduleContext.ToListAsync());
+                .Include(s => s.PendingSwitches)
+                .Where(s => s.User.Email.Equals(User.Identity.Name) || s.UserWishShift.Email.Equals(User.Identity.Name)) // one of the users is involved
+                ;
+
+            var myRequests = scheduleContext.Where(s => s.User.Email.Equals(User.Identity.Name));
+            var requestsToMe = scheduleContext.Where(s => s.UserWishShift.Email.Equals(User.Identity.Name))
+                .Where(s => !s.HasBeenSwitched); // bilo direct bilo broadcast koji nije zamijenjen
+
+            //var myDirect = myRequests.Where(s => !s.IsBroadcast);
+            //var myBroadcast = myRequests.Where(s => s.IsBroadcast);
+            //var directToMe = requestsToMe.Where(s => !s.IsBroadcast);
+            //var broadcastToMe = requestsToMe.Where(s => s.IsBroadcast);
+
+            var model =
+                new Dictionary<RequestType, List<SwitchRequest>>
+                {
+                    { RequestType.MY_REQUESTS, await myRequests.ToListAsync() },
+                    { RequestType.REQUESTS_TO_ME, await requestsToMe.ToListAsync() }
+                    //{ RequestType.directToMe, await directToMe.ToListAsync() },
+                    //{ RequestType.broadcastToMe, await broadcastToMe.ToListAsync() }
+                };
+
+            return View(model); //await scheduleContext.ToListAsync());
         }
+
+
 
         // GET: Requests/Details/5
         public async Task<IActionResult> Details(int? id)
