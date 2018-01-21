@@ -128,7 +128,10 @@ namespace ScheduleApp.Web.Controllers
                 // if it's broadcast, reject all other pendingSwitches
                 foreach (var p in switchRequest.PendingSwitches)
                 {
-                    p.Status = Extensions.Constants.REQUEST_STATUS_REJECTED;
+                    if(p.Id != pendingSwitch.Id) // don't change accepted pending switch - fixx
+                    {
+                        p.Status = Extensions.Constants.REQUEST_STATUS_REJECTED;
+                    }
                 }
                 // and set WishShift to acceptor random(?) shift
                 // -- get acceptor
