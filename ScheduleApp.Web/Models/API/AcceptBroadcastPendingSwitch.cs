@@ -19,6 +19,6 @@ namespace ScheduleApp.Web.Models.API
         /// </summary>
         public int AcceptorId { get; set; }
 
-        public DateTime OfferedDate { get; set; }
+        public int OfferedShiftId { get; set; }
     }
 }

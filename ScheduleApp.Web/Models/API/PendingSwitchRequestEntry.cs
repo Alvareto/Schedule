@@ -11,19 +11,20 @@ namespace ScheduleApp.Web.Models.API
     {
         public int SwitchRequestId { get; set; }
         public int RequestUserId { get; set; }
+        public string AcceptorUsername { get; set; }
         public string RequesterUsername { get; set; }
+        public bool IsBroadcast { get; set; }
         /// <summary>
         /// datum stvaranja ponude
         /// </summary>
+        /// 
         public DateTime? RequestCreatedDate { get; set; }
         /// <summary>
         /// datum kojeg requestor želi mijenjati
         /// </summary>
-        public DateTime RequesterDate { get; set; }
-        /// <summary>
-        /// lista svih ponuda za zamjenu
-        /// </summary>
-        public List<PendingSwitchEntry> OfferedDates { get; set; }
+        public DateTime CurrentDate { get; set; }
+        public DateTime? WishDate { get; set; }
+
     }
 
 }

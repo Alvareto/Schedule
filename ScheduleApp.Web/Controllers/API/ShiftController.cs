@@ -95,36 +95,43 @@ namespace ScheduleApp.Web.Controllers.API
 
         // GET: Api/Shift/Today
         [HttpGet("Today")]
-        public IActionResult Today()
+        public TodayEntry Today()
         {
-            if (!ModelState.IsValid)
+            var dateEntry = (from shifts in _context.Shift.AsQueryable()
+                    join schedules in _context.Schedule.AsQueryable()
+                    on shifts.Id equals schedules.ShiftId
+                    where shifts.ShiftDate.Value.Year == DateTime.Today.Year
+                    && shifts.ShiftDate.Value.Month == DateTime.Today.Month
+                    && shifts.ShiftDate.Value.Day == DateTime.Today.Day
+                    select new DateEntry
+                    {
+                        Date = (DateTime)shifts.ShiftDate,
+                        DayType = "WORKDAY",
+                        UserId = (int)schedules.UserId,
+                        Username = schedules.User.Username,
+                        StartHour = 8,
+                        EndHour = 16,
+                        ShiftId = shifts.Id
+                    }).SingleOrDefault();
+            var todayEntry = new TodayEntry();
+            todayEntry.Date = dateEntry;
+
+            if (dateEntry != null)
             {
-                return BadRequest(ModelState);
+                var user = _context.User.SingleOrDefault(m => m.Id == dateEntry.UserId);
+
+                UserEntry userEntry = new UserEntry();
+                userEntry.Id = user.Id;
+                userEntry.MobilePhone = user.MobilePhoneString;
+                userEntry.DepartmentPhone = user.DepartmentPhoneString;
+                userEntry.Username = user.Username;
+                userEntry.Email = user.Email;
+                userEntry.Role = user.Role.ToString();
+                userEntry.NextShiftDate = null;
+                todayEntry.User = userEntry;
             }
 
-            var shift = (from shifts in _context.Shift.AsQueryable()
-                                    join schedules in _context.Schedule.AsQueryable()
-                                    on shifts.Id equals schedules.ShiftId
-                                    where shifts.ShiftDate.Value.Year == DateTime.Today.Year
-                                    && shifts.ShiftDate.Value.Month == DateTime.Today.Month
-                                    && shifts.ShiftDate.Value.Day == DateTime.Today.Day
-                                    select new DateEntry
-                                    {
-                                        Date = (DateTime)shifts.ShiftDate,
-                                        DayType = "WORKDAY",
-                                        UserId = (int)schedules.UserId,
-                                        Username = schedules.User.Username,
-                                        StartHour = 8,
-                                        EndHour = 16,
-                                        ShiftId = shifts.Id
-                                    }).SingleOrDefault();
-
-            if (shift == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(shift);
+            return todayEntry;
         }
 
         // GET: api/Shift/5

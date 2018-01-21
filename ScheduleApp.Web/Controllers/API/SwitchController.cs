@@ -43,7 +43,6 @@ namespace ScheduleApp.Web.Controllers.API
                 AcceptorUsername = s.NewUser.FirstName + " " + s.NewUser.LastName
             });
         }
-
         [HttpGet("Pending/{id}")]
         public IEnumerable<PendingSwitchRequestEntry> GetPendingSwitchRequestEntriesForUser([FromRoute] int id)
         {
@@ -51,39 +50,40 @@ namespace ScheduleApp.Web.Controllers.API
                     join pending in _context.PendingSwitch.AsQueryable()
                     on request.Id equals pending.SwitchRequestId
                     where request.HasBeenSwitched == false
+                    && pending.UserId == id
+                    && pending.Status == ScheduleApp.Web.Extensions.Constants.REQUEST_STATUS_NEW
                     select new PendingSwitchRequestEntry
                     {
                         SwitchRequestId = request.Id,
-                        RequestUserId = (int)request.UserId,
+                        IsBroadcast = request.IsBroadcast,
+                        RequestUserId = (int)request.User.Id,
                         RequesterUsername = request.User.Username,
-                        RequestCreatedDate = null,
-                        RequesterDate = (DateTime)request.CurrentShift.ShiftDate,
-                        OfferedDates = request.PendingSwitches.Select(ps => new PendingSwitchEntry
-                        {
-                            Id = ps.Id,
-                            Status = ps.Status,
-                            UserId = (int)ps.UserId,
-                            Date = (DateTime)ps.Date,
-                            SwitchRequestId = (int)ps.SwitchRequestId
-                        }).ToList()
+                        RequestCreatedDate = request.RequestCreatedDate,
+                        CurrentDate = (DateTime)request.CurrentShift.ShiftDate,
+                        WishDate = request.WishShift.ShiftDate
                     }).ToList();
         }
 
-        [HttpGet("Receivedpending/{id}")]
-        public IEnumerable<ReceivedPendingSwitchRequestEntry> GetReceivedPendingSwitchRequestEntriesForUser([FromRoute] int id)
+        [HttpGet("RequesterPending/{id}")]
+        public IEnumerable<PendingSwitchRequestEntry> GetReceivedPendingSwitchRequestEntriesForUser([FromRoute] int id)
         {
             return (from request in _context.SwitchRequest.AsQueryable()
-                    join pending in _context.PendingSwitch.AsQueryable()
-                    on request.Id equals pending.SwitchRequestId
-                    where request.HasBeenSwitched == false
-                    select new ReceivedPendingSwitchRequestEntry
+                    where request.HasBeenSwitched == false 
+                    && request.UserId == id
+                    && (
+                        from pending in request.PendingSwitches
+                        where request.Id == pending.SwitchRequestId && pending.Status == ScheduleApp.Web.Extensions.Constants.REQUEST_STATUS_NEW
+                        select pending.SwitchRequestId
+                       ).Contains(request.Id)
+                    select new PendingSwitchRequestEntry
                     {
                         SwitchRequestId = request.Id,
                         IsBroadcast = request.IsBroadcast,
-                        RequesterUserId = (int)request.UserId,
-                        RequesterUsername = request.User.Username,
-                        RequestCreatedDate = null,
-                        RequesterDate = (DateTime)request.CurrentShift.ShiftDate,
+                        RequestUserId = (int)request.User.Id,
+                        RequesterUsername = request.User.Username,                        
+                        RequestCreatedDate = request.RequestCreatedDate,
+                        CurrentDate = (DateTime)request.CurrentShift.ShiftDate,
+                        WishDate = request.WishShift.ShiftDate
                     }).ToList();
         }
 
@@ -95,17 +95,30 @@ namespace ScheduleApp.Web.Controllers.API
             {
                 return BadRequest(ModelState);
             }
-            SwitchRequest switchRequest = new SwitchRequest();
+
+
+            var pendingSwitch = new PendingSwitch();
+            pendingSwitch.UserId = directSwitchRequest.AcceptUserId;
+            pendingSwitch.Date = directSwitchRequest.OfferedDate;
+            pendingSwitch.Status = ScheduleApp.Web.Extensions.Constants.REQUEST_STATUS_NEW;
+
+
+            var switchRequest = new SwitchRequest();
+            switchRequest.UserWishShiftId = directSwitchRequest.AcceptUserId;
             switchRequest.HasBeenSwitched = false;
             switchRequest.UserId = directSwitchRequest.RequestUserId;
             switchRequest.CurrentShiftId = directSwitchRequest.RequesterShiftId;
             switchRequest.WishShiftId = directSwitchRequest.AcceptorShiftId;
             switchRequest.IsBroadcast = false;
+            switchRequest.RequestCreatedDate = DateTime.Now;
 
-            _context.SwitchRequest.Add(switchRequest);
-            var result = await _context.SaveChangesAsync();
-            // pokreni proceduru za dodavanje zapisa u PendingSwitch za primatelja
 
+            // Add 1 pending switch to notify wish-user about your current-shift-date switch request 
+            switchRequest?.PendingSwitches?.Add(pendingSwitch);
+
+
+            _context.Add(switchRequest);
+            await _context.SaveChangesAsync();
 
             return Ok(true);
         }
@@ -122,17 +135,35 @@ namespace ScheduleApp.Web.Controllers.API
             switchRequest.HasBeenSwitched = false;
             switchRequest.UserId = broadcastSwitchRequest.RequestUserId;
             switchRequest.CurrentShiftId = broadcastSwitchRequest.RequesterShiftId;
+            switchRequest.UserWishShiftId = null;
             switchRequest.IsBroadcast = true;
+            switchRequest.RequestCreatedDate = DateTime.Now;
 
-            _context.SwitchRequest.Add(switchRequest);
-            await _context.SaveChangesAsync();
+                // Add N pending switch to notify all users about your current-shift-date switch request 
+                switchRequest.PendingSwitches = new List<PendingSwitch>();
+
+            //  await _context.User.ForEachAsync(
+            await _context.User.Where(u => u.Id != switchRequest.UserId).ForEachAsync(
+                   u =>
+                     {
+                         switchRequest.PendingSwitches.Add(
+                             new PendingSwitch()
+                             {
+                                 UserId = u.Id,
+                                 Date = null,
+                                 Status = ScheduleApp.Web.Extensions.Constants.REQUEST_STATUS_NEW
+                             });
+                     });
+
+                _context.Add(switchRequest);
+                await _context.SaveChangesAsync();
 
             return Ok(true);
         }
 
         // POST: api/Switch/Acceptdirect
         [HttpPost("Acceptdirect")]
-        public async Task<IActionResult> PostSwitchDirectRequestAccept([FromBody] AcceptDirectPendingSwitch acceptPendingSwitch)
+        public IActionResult PostSwitchDirectRequestAccept([FromBody] AcceptDirectPendingSwitch acceptPendingSwitch)
         {
             if (!ModelState.IsValid)
             {
@@ -140,34 +171,119 @@ namespace ScheduleApp.Web.Controllers.API
             }
 
             var pendingSwitch = _context.PendingSwitch.Single(ps => ps.SwitchRequestId == acceptPendingSwitch.SwitchRequestId && ps.UserId == acceptPendingSwitch.AcceptorId);
-            pendingSwitch.Status = "ACCEPTED";
-            await _context.SaveChangesAsync();
-            // TODO: pokreni proceduru zamjene shiftova
+            if (pendingSwitch == null)
+            {
+                return NotFound();
+            }
+
+            pendingSwitch.Status = ScheduleApp.Web.Extensions.Constants.REQUEST_STATUS_ACCEPTED;
+
+            var acceptor = _context.User.SingleOrDefault(u => u.Id == acceptPendingSwitch.AcceptorId);
+            if (acceptor == null)
+            {
+                return NotFound();
+            }
+
+            var switchRequest = _context.SwitchRequest.SingleOrDefault(u => u.Id == acceptPendingSwitch.SwitchRequestId);
+            if (switchRequest == null)
+            {
+                return NotFound();
+            }
+
+            switchRequest.HasBeenSwitched = true;
+
+            var currentShift = _context.Shift.SingleOrDefault(u => u.Id == switchRequest.CurrentShiftId);
+            var wishShift = _context.Shift.SingleOrDefault(u => u.Id == switchRequest.WishShiftId);
+
+            var currentSchedule = _context.Schedule.SingleOrDefault(u => u.ShiftId == currentShift.Id);
+            var wishSchedule = _context.Schedule.SingleOrDefault(u => u.ShiftId == wishShift.Id);
+
+            var wishScheduleUserId = wishSchedule.UserId;
+            wishSchedule.UserId = currentSchedule.UserId;
+            currentSchedule.UserId = wishScheduleUserId;
+           
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(pendingSwitch);
+                    _context.Update(switchRequest);
+                    _context.Update(currentSchedule);
+                    _context.Update(wishSchedule);
+                    _context.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return NotFound();
+                }
+            }
 
             return Ok(true);
         }
 
         // POST: api/Switch/Acceptbroadcast
         [HttpPost("Acceptbroadcast")]
-        public async Task<IActionResult> PostSwitchBroadcastRequestAccept([FromBody] AcceptBroadcastPendingSwitch acceptPendingSwitch)
-        {
+        public IActionResult PostSwitchBroadcastRequestAccept([FromBody] AcceptBroadcastPendingSwitch acceptPendingSwitch)
+        { 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var pendingSwitch = _context.PendingSwitch.Single(ps => ps.SwitchRequestId == acceptPendingSwitch.SwitchRequestId && ps.UserId == acceptPendingSwitch.AcceptorId);
-            pendingSwitch.Status = "ACCEPTED";
-            pendingSwitch.Date = acceptPendingSwitch.OfferedDate;
-            await _context.SaveChangesAsync();
+            if (pendingSwitch == null)
+            {
+                return NotFound();
+            }
+
+            pendingSwitch.Status = ScheduleApp.Web.Extensions.Constants.REQUEST_STATUS_ACCEPTED;
+
+            var acceptor = _context.User.SingleOrDefault(u => u.Id == acceptPendingSwitch.AcceptorId);
+            if (acceptor == null)
+            {
+                return NotFound();
+            }
+
+            var switchRequest = _context.SwitchRequest.SingleOrDefault(u => u.Id == acceptPendingSwitch.SwitchRequestId);
+            if (switchRequest == null)
+            {
+                return NotFound();
+            }
+            switchRequest.HasBeenSwitched = true;
+
+            var currentShift = _context.Shift.SingleOrDefault(u => u.Id == switchRequest.CurrentShiftId);
+            var wishShift = _context.Shift.SingleOrDefault(u => u.Id == acceptPendingSwitch.OfferedShiftId);
+
+            var currentSchedule = _context.Schedule.SingleOrDefault(u => u.ShiftId == currentShift.Id);
+            var wishSchedule = _context.Schedule.SingleOrDefault(u => u.ShiftId == acceptPendingSwitch.OfferedShiftId);
+
+            var wishScheduleUserId = wishSchedule.UserId;
+            wishSchedule.UserId = currentSchedule.UserId;
+            currentSchedule.UserId = wishScheduleUserId;
+        
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(currentSchedule);
+                    _context.Update(wishSchedule);
+                    _context.Update(pendingSwitch);
+                    _context.Update(switchRequest);
+                    _context.SaveChanges();
+                }
+                catch (Exception)
+                {
+                        return NotFound();
+                }
+            }
 
             return Ok(true);
         }
 
 
-        // POST: api/Switch/Acceptbroadcast
+        // POST: api/Switch/Decline
         [HttpPost("Decline")]
-        public async Task<IActionResult> PostSwitchRequestDecline([FromBody] DeclinePendingSwitch declinePendingSwitch)
+        public IActionResult PostSwitchRequestDecline([FromBody] DeclinePendingSwitch declinePendingSwitch)
         {
             if (!ModelState.IsValid)
             {
@@ -175,11 +291,33 @@ namespace ScheduleApp.Web.Controllers.API
             }
 
             var pendingSwitch = _context.PendingSwitch.Single(ps => ps.SwitchRequestId == declinePendingSwitch.SwitchRequestId && ps.UserId == declinePendingSwitch.AcceptorId);
-            pendingSwitch.Status = "DECLINED";
-            await _context.SaveChangesAsync();
+            pendingSwitch.Status = ScheduleApp.Web.Extensions.Constants.REQUEST_STATUS_REJECTED;
+            try
+            {
+                _context.Update(pendingSwitch);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
 
             return Ok(true);
         }
+
+        // DELETE: api/switch/delete
+        [HttpPost("Delete")]
+        public IActionResult DeleteSwitchRequest([FromBody] DeleteSwitchRequest deleteSwitchRequest)
+        {
+            var switchRequest =  _context.SwitchRequest.SingleOrDefault(m => m.Id == deleteSwitchRequest.SwitchRequestId);
+            if (switchRequest.UserId == deleteSwitchRequest.UserId)
+            {
+                _context.SwitchRequest.Remove(switchRequest);
+                _context.SaveChanges();
+            }
+            return Ok(true);
+        }
+
 
         // GET: api/Switch
         [HttpGet]

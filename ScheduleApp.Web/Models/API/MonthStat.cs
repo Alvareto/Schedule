@@ -7,7 +7,7 @@
     {
         public int Year { get; set; }
         public int Month { get; set; }
-        public double ShiftTime { get; set; }
+        public int ShiftTime { get; set; }
     }
 
 }

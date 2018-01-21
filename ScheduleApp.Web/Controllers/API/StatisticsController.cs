@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ScheduleApp.Model;
+using ScheduleApp.Model.Models;
+using ScheduleApp.Web.Models.API;
 
 namespace ScheduleApp.Web.Controllers.API
 {
@@ -24,21 +26,24 @@ namespace ScheduleApp.Web.Controllers.API
 
         // GET: api/Statistics/All
         [HttpGet("All")]
-        public IEnumerable<Schedule> GetAllStats()
+        public IEnumerable<Statistics> GetAllStats()
         {
-            return _context.Schedule;
+            return _context.Statistics.ToList();
         }
 
         // GET: api/Statistics/User/5
         [HttpGet("User/{id}")]
-        public IEnumerable<Schedule> GetUserStats([FromRoute] int id)
+        public IEnumerable<MonthStat> GetUserStats([FromRoute] int id)
         {
-            return _context.Schedule;
-        }
-
-        private bool ScheduleExists(int id)
-        {
-            return _context.Schedule.Any(e => e.Id == id);
+            return (from stat in _context.Statistics.AsQueryable()
+                    join user in _context.User.AsQueryable()
+                    on stat.UserId equals user.Id
+                    select new MonthStat
+                    {
+                        Year = (int)stat.Year,
+                        Month = (int)stat.Month,
+                        ShiftTime = (int)stat.Duration
+                    }).ToList();
         }
     }
 }

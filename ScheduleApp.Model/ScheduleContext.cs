@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using ScheduleApp.Model.Models;
 
 namespace ScheduleApp.Model
 {
@@ -14,6 +15,8 @@ namespace ScheduleApp.Model
         public virtual DbSet<SwitchShift> SwitchShift { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<PendingSwitch> PendingSwitch { get; set; }
+        public virtual DbSet<Statistics> Statistics { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -244,6 +247,28 @@ namespace ScheduleApp.Model
                 entity.Property(e => e.MobilePhoneString).HasColumnName("mobile_phone");
 
                 entity.Property(e => e.DepartmentPhoneString).HasColumnName("department_phone");
+            });
+
+            modelBuilder.Entity<Statistics>(entity =>
+            {
+                entity.ToTable("statistics");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.Property(e => e.Year).HasColumnName("year");
+
+                entity.Property(e => e.Month).HasColumnName("month");
+
+                entity.Property(e => e.Duration).HasColumnName("duration");
+
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Statistics)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("statistics_user_id_fkey");
+
             });
         }
     }

@@ -191,8 +191,6 @@ namespace ScheduleApp.Web.Controllers
                 return NotFound();
             }
 
-
-
             pendingSwitch.Status = Extensions.Constants.REQUEST_STATUS_REJECTED;
 
             if (ModelState.IsValid)

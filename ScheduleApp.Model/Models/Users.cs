@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using ScheduleApp.Model.Models;
 
 namespace ScheduleApp.Model
 {
@@ -24,6 +25,7 @@ namespace ScheduleApp.Model
             SwitchshiftPrevUser = new HashSet<SwitchShift>();
             PendingRequests = new HashSet<PendingSwitch>();
             WishShiftRequests = new HashSet<SwitchRequest>();
+            Statistics = new HashSet<Statistics>();
         }
 
 
@@ -57,5 +59,6 @@ namespace ScheduleApp.Model
         public ICollection<SwitchShift> SwitchshiftPrevUser { get; set; }
         public ICollection<PendingSwitch> PendingRequests { get; set; }
         public ICollection<SwitchRequest> WishShiftRequests { get; set; }
+        public ICollection<Statistics> Statistics { get; set; }
     }
 }

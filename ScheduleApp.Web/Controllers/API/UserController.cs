@@ -59,26 +59,10 @@ namespace ScheduleApp.Web.Controllers.API
         /// </summary>
         // PUT: api/User/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] UserEntry userEntry)
+        public async Task<IActionResult> PutUser([FromBody] UserUpdateEntry userEntry)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != userEntry.Id)
-            {
-                return BadRequest();
-            }
-
-            if (!UserExists(id))
-            {
-                return NotFound();
-            }
 
             var user = _context.User.Find(userEntry.Id);
-            user.FirstName = userEntry.FirstName;
-            user.LastName = userEntry.LastName;
             user.Username = userEntry.Username;
             user.MobilePhoneString = userEntry.MobilePhone;
             user.DepartmentPhoneString = userEntry.DepartmentPhone;
