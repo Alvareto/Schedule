@@ -80,6 +80,7 @@ namespace ScheduleApp.Web.Controllers.API
                         SwitchRequestId = request.Id,
                         IsBroadcast = request.IsBroadcast,
                         RequestUserId = (int)request.User.Id,
+                        AcceptorUsername = request.IsBroadcast == false? request.UserWishShift.Username:"", 
                         RequesterUsername = request.User.Username,                        
                         RequestCreatedDate = request.RequestCreatedDate,
                         CurrentDate = (DateTime)request.CurrentShift.ShiftDate,

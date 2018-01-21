@@ -38,6 +38,7 @@ namespace ScheduleApp.Web.Controllers.API
             return (from stat in _context.Statistics.AsQueryable()
                     join user in _context.User.AsQueryable()
                     on stat.UserId equals user.Id
+                    where stat.Year == DateTime.Now.Year
                     select new MonthStat
                     {
                         Year = (int)stat.Year,
