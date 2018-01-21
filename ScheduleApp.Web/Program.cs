@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+//using ScheduleApp.Web.EndpointConfiguration;
+//using ScheduleApp.Web.KestrelServerOptionsExtensions;
 
 namespace ScheduleApp.Web
 {
@@ -13,6 +15,7 @@ namespace ScheduleApp.Web
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseKestrel(options => options.ConfigureEndpoints())
                 .Build();
     }
 }
