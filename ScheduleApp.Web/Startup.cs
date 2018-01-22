@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ScheduleApp.Model;
 using ScheduleApp.Web.Authorization;
+//using ScheduleApp.Web.EndpointConfiguration;
+//using ScheduleApp.Web.KestrelServerOptionsExtensions;
 
 namespace ScheduleApp.Web
 {
@@ -66,6 +68,17 @@ namespace ScheduleApp.Web
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            /*int? httpsPort = null;
+            var httpsSection = Configuration.GetSection("HttpServer:Endpoints:Https");
+            if (httpsSection.Exists())
+            {
+                var httpsEndpoint = new EndpointConfiguration();
+                httpsSection.Bind(httpsEndpoint);
+                httpsPort = httpsEndpoint.Port;
+            }
+            var statusCode = env.IsDevelopment() ? StatusCodes.Status302Found : StatusCodes.Status301MovedPermanently;
+            app.UseRewriter(new RewriteOptions().AddRedirectToHttps(statusCode, httpsPort));
+            */
             app.UseStaticFiles();
 
             app.UseAuthentication();
