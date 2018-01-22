@@ -3,6 +3,10 @@
     border-radius: 0 !important;
 }
 
+td .alert-info {
+    background-color: #ecf0f1!important;
+}
+
 span {
     border-radius: 10px !important;
 }
