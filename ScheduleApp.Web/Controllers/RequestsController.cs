@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using ScheduleApp.Model;
 using ScheduleApp.Web.Authorization;
 using ScheduleApp.Web.Extensions;
+using Constants = ScheduleApp.Web.Extensions.Constants;
 
 namespace ScheduleApp.Web.Controllers
 {
@@ -43,12 +44,12 @@ namespace ScheduleApp.Web.Controllers
                 .Include(s => s.WishShift)
                 .Include(s => s.User)
                 .Include(s => s.UserWishShift)
-                .Include(s => s.PendingSwitches)
-                .Where(s => s.User.Email.Equals(User.Identity.Name) || s.UserWishShift.Email.Equals(User.Identity.Name)) // one of the users is involved
-                ;
+                .Include(s => s.PendingSwitches).ThenInclude(u => u.User);// fixx to show all user emails in broadcast list
+                                                                          // removed double condition to fix broadcast accept requests not showing up xd
+                                                                          //.Where(s => s.User.Email.Equals(User.Identity.Name) || s.UserWishShift.Email.Equals(User.Identity.Name)) // one of the users is involved
 
             var myRequests = scheduleContext.Where(s => s.User.Email.Equals(User.Identity.Name));
-            var requestsToMe = scheduleContext.Where(s => s.UserWishShift.Email.Equals(User.Identity.Name))
+            var requestsToMe = scheduleContext.Where(s => s.UserWishShift.Email == User.Identity.Name || s.IsBroadcast)
                 .Where(s => !s.HasBeenSwitched); // bilo direct bilo broadcast koji nije zamijenjen
 
             //var myDirect = myRequests.Where(s => !s.IsBroadcast);
@@ -64,6 +65,9 @@ namespace ScheduleApp.Web.Controllers
                     //{ RequestType.directToMe, await directToMe.ToListAsync() },
                     //{ RequestType.broadcastToMe, await broadcastToMe.ToListAsync() }
                 };
+
+            // helper broadcast acceptor select list for Accept action
+            ViewData["BroadcastWishShiftId"] = new SelectList(_context.Schedule.Include(s => s.User).Where(s => s.User.Email == User.Identity.Name).Select(s => s.Shift).OrderBy(s => s.ShiftDate), "Id", "ShiftDate");
 
             return View(model); //await scheduleContext.ToListAsync());
         }
@@ -91,7 +95,7 @@ namespace ScheduleApp.Web.Controllers
             return View(switchRequest);
         }
 
-        public IActionResult Accept(int id)
+        public IActionResult Accept(int id, int broadcastWishShiftId)
         {
             var pendingSwitch = _context.PendingSwitch
                 .Include(s => s.User)
@@ -123,7 +127,10 @@ namespace ScheduleApp.Web.Controllers
                 // if it's broadcast, reject all other pendingSwitches
                 foreach (var p in switchRequest.PendingSwitches)
                 {
-                    p.Status = Extensions.Constants.REQUEST_STATUS_REJECTED;
+                    if (p.Id != pendingSwitch.Id) // don't change accepted pending switch - fixx
+                    {
+                        p.Status = Extensions.Constants.REQUEST_STATUS_REJECTED;
+                    }
                 }
                 // and set WishShift to acceptor random(?) shift
                 // -- get acceptor
